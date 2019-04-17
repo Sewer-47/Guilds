@@ -1,0 +1,7 @@
+name: Guilds
+version: 1.0
+main: me.sewer.guilds.GuildsPlugin
+authors:
+  - Sewer
+commands:
+  guild:
