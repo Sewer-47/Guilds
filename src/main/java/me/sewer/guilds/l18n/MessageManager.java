@@ -1,5 +1,6 @@
 package me.sewer.guilds.l18n;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class MessageManager {
         this.localeMap.remove(messageMap.getLocale());
     }
 
-    public Optional<MessageMap> getMessage(Locale locale) {
+    public Optional<MessageMap> getMessageMap(Locale locale) {
         return Optional.ofNullable(this.localeMap.get(locale));
     }
 
@@ -32,5 +33,15 @@ public class MessageManager {
 
     public Locale getFallback() {
         return this.fallback;
+    }
+
+    public String getMessage(Locale locale, String message, Object... params) {
+        String text;
+        if (this.localeMap.containsKey(locale)) {
+            text = this.localeMap.get(locale).get(message);
+        } else {
+            text = this.localeMap.get(this.fallback).get(message);
+        }
+        return MessageFormat.format(text, params);
     }
 }

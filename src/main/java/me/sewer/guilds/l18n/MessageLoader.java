@@ -32,7 +32,6 @@ public class MessageLoader {
        String country = StringUtils.substring(name, 3, 5);
        Locale locale = new Locale(language, country);
        MessageMap messageMap = new MessageMap(key -> "Missing " + key + " message.", locale);
-
        Properties properties = new Properties();
        try {
            InputStream inputStream = new FileInputStream(file);

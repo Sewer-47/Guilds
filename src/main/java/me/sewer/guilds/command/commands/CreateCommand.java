@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.Random;
@@ -62,10 +61,9 @@ public class CreateCommand extends Command {
         if (!event.isCancelled()) {
             this.plugin.getGuildManager().registerGuild(guild);
             this.plugin.getRegionManager().byWorldId(world.getUID()).add(region);
-            sender.sendMessage("Zalozyles gildie");
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                player.sendMessage("Gracz " + sender.getName() + " zalozyl gildie o tagu " + render.getTag());
-            }
+            user.setGuild(guild);
+            user.sendMessage("guildCreate", render.getTag(), render.getName());
+            Bukkit.getOnlinePlayers().forEach(player -> this.plugin.getUserManager().getUser(player).ifPresent(user1 -> user1.sendMessage("guildCreateBc", sender.getName(), render.getTag(), render.getName())));
         }
         return true;
     }

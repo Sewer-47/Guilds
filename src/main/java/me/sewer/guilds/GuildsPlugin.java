@@ -3,6 +3,7 @@ package me.sewer.guilds;
 import me.sewer.guilds.command.BukkitCommand;
 import me.sewer.guilds.command.Command;
 import me.sewer.guilds.command.commands.CreateCommand;
+import me.sewer.guilds.command.commands.InfoCommand;
 import me.sewer.guilds.guild.GuildFileManager;
 import me.sewer.guilds.guild.GuildListeners;
 import me.sewer.guilds.guild.GuildManager;
@@ -10,6 +11,7 @@ import me.sewer.guilds.l18n.MessageListeners;
 import me.sewer.guilds.l18n.MessageLoader;
 import me.sewer.guilds.l18n.MessageManager;
 import me.sewer.guilds.listener.AsyncPlayerChatListener;
+import me.sewer.guilds.listener.PlayerInteractEntityListener;
 import me.sewer.guilds.listener.GuildRegionListeners;
 import me.sewer.guilds.listener.PlayerJoinListener;
 import me.sewer.guilds.region.RegionListeners;
@@ -95,6 +97,7 @@ public class GuildsPlugin extends JavaPlugin {
 
                 new PlayerJoinListener(this),
                 new AsyncPlayerChatListener(this),
+                new PlayerInteractEntityListener(this),
 
                 new GuildRegionListeners(this),
 
@@ -105,6 +108,8 @@ public class GuildsPlugin extends JavaPlugin {
 
         BukkitCommand command = new BukkitCommand(this);
         Command cmd = new CreateCommand(this);
+        command.getCommands().put(cmd.getName(), cmd);
+        cmd = new InfoCommand(this);
         command.getCommands().put(cmd.getName(), cmd);
         this.getCommand("guild").setExecutor(command);
     }
