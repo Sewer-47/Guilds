@@ -8,10 +8,10 @@ import java.util.Optional;
 public class MessageManager {
 
     private final Map<Locale, MessageMap> localeMap = new HashMap<>();
-    private final Locale ballback;
+    private final Locale fallback;
 
-    public MessageManager(Locale ballback) {
-        this.ballback = ballback;
+    public MessageManager(Locale fallback) {
+        this.fallback = fallback;
     }
 
     public void registerLocale(MessageMap messageMap) {
@@ -30,7 +30,7 @@ public class MessageManager {
         return this.localeMap;
     }
 
-    public Locale getBallback() {
-        return this.ballback;
+    public Locale getFallback() {
+        return this.fallback;
     }
 }

@@ -7,9 +7,8 @@ import me.sewer.guilds.region.event.PlayerRegionEnterEvent;
 import me.sewer.guilds.region.event.PlayerRegionQuitEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
-public class RegionTask extends BukkitRunnable {
+public class RegionTask implements Runnable {
 
     private final GuildsPlugin plugin;
 

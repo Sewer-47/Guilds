@@ -12,13 +12,11 @@ public class GuildTerrain {
 
     private final Region region;
     private final Vector home;
-    private final Vector firstLocation;
     private final Reference<World> world;
 
     public GuildTerrain(Region region, Location home) {
         this.region = region;
         this.home = home.toVector();
-        this.firstLocation = home.toVector();
         this.world = new WeakReference<>(home.getWorld());
     }
 
@@ -28,10 +26,6 @@ public class GuildTerrain {
 
     public Vector getHome() {
         return home;
-    }
-
-    public Vector getFirstLocation() {
-        return firstLocation;
     }
 
     public Reference<World> getWorld() {

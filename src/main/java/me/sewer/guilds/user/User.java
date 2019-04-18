@@ -2,10 +2,15 @@ package me.sewer.guilds.user;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.guild.Guild;
+import me.sewer.guilds.l18n.MessageManager;
+import me.sewer.guilds.l18n.MessageMap;
+import me.sewer.guilds.util.ChatUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,6 +20,7 @@ public class User implements UserProfile {
     private final String name;
     private final UUID uniqueId;
     private final Reference<Player> bukkit;
+    private final MessageManager messageManager;
     private Guild guild;
     private Locale locale;
 
@@ -22,7 +28,9 @@ public class User implements UserProfile {
         this.name = bukkit.getName();
         this.uniqueId = bukkit.getUniqueId();
         this.bukkit = new WeakReference<>(bukkit);
-        this.locale = plugin.getMessageManager().getBallback(); //use bukkit.getLocale()
+        this.messageManager = plugin.getMessageManager();
+        this.locale = plugin.getMessageManager().getFallback(); //use bukkit.getLocale()
+
     }
 
     @Override
@@ -59,7 +67,14 @@ public class User implements UserProfile {
         return bukkit;
     }
 
-    public void sendMessage(String message) {
-        this.bukkit.get().sendMessage(message);
+    public void sendMessage(String message, Object... params) {
+        String text;
+        Optional<MessageMap> messageMap = this.messageManager.getMessage(this.locale);
+        if (messageMap.isPresent()) {
+            text = messageMap.get().get(message);
+        } else {
+            text = this.messageManager.getMessage(this.messageManager.getFallback()).get().get(message);
+        }
+        this.bukkit.get().sendMessage(ChatUtil.color(MessageFormat.format(text, params)));
     }
 }

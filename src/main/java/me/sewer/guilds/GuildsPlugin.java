@@ -7,6 +7,7 @@ import me.sewer.guilds.guild.GuildFileManager;
 import me.sewer.guilds.guild.GuildListeners;
 import me.sewer.guilds.guild.GuildManager;
 import me.sewer.guilds.l18n.MessageListeners;
+import me.sewer.guilds.l18n.MessageLoader;
 import me.sewer.guilds.l18n.MessageManager;
 import me.sewer.guilds.listener.AsyncPlayerChatListener;
 import me.sewer.guilds.listener.GuildRegionListeners;
@@ -19,19 +20,20 @@ import me.sewer.guilds.user.User;
 import me.sewer.guilds.user.UserFileManager;
 import me.sewer.guilds.user.UserListeners;
 import me.sewer.guilds.user.UserManager;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 
+import java.io.File;
 import java.util.Locale;
+import java.util.logging.Level;
 
 public class GuildsPlugin extends JavaPlugin {
-
-    public static final String VERSION = "0.1";
 
     private UserManager userManager;
     private GuildManager guildManager;
@@ -44,17 +46,35 @@ public class GuildsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        File folder = new File(this.getDataFolder(), "l18n");
+        if (!folder.exists() && !folder.isDirectory()) {
+            folder.mkdirs();
+            this.getLogger().log(Level.INFO, "Folder /Guilds/l18n/ was created!");
+        }
+        this.saveResource("l18n/en_US.properties", false);
+        this.saveResource("l18n/pl_PL.properties", false);
+
+        MessageLoader messageLoader = new MessageLoader(this);
         PluginManager pluginManager = this.getServer().getPluginManager();
-        //BukkitScheduler scheduler = this.getServer().getScheduler();
+        BukkitScheduler scheduler = this.getServer().getScheduler();
+
+        this.saveDefaultConfig();
 
         this.userManager = new UserManager();
         this.guildManager = new GuildManager();
         this.regionManager = new RegionManager();
-        this.messageManager = new MessageManager(Locale.ENGLISH);
+
+        String defaultLocale = this.getConfig().getString("defaultLang");
+        String language = StringUtils.substring(defaultLocale, 0 ,2);
+        String country = StringUtils.substring(defaultLocale, 3, 5);
+        Locale locale = new Locale(language, country);
+        this.messageManager = new MessageManager(locale);
 
 
         this.userFileManager = new UserFileManager(this);
         this.guildFileManager = new GuildFileManager(this);
+
+        messageLoader.loadAll();
 
         for (World world : Bukkit.getWorlds()) {
             this.regionManager.addRegionRegistry(world.getUID(), new RegionRegistry(world.getUID()));
@@ -65,10 +85,7 @@ public class GuildsPlugin extends JavaPlugin {
             this.userManager.registerUser(user);
         }
 
-        //scheduler.runTaskAsynchronously(this, new RegionTask(this), 1L, 5L);
-        BukkitRunnable regionTask = new RegionTask(this);
-        regionTask.runTaskLaterAsynchronously(this, 5L);
-
+        scheduler.scheduleAsyncRepeatingTask(this, new RegionTask(this), 1L, 5L);
 
         for (Listener listener : new Listener[] {
                 new UserListeners(this),
@@ -76,7 +93,7 @@ public class GuildsPlugin extends JavaPlugin {
                 new GuildListeners(this),
                 new MessageListeners(this),
 
-                new PlayerJoinListener(),
+                new PlayerJoinListener(this),
                 new AsyncPlayerChatListener(this),
 
                 new GuildRegionListeners(this),
@@ -90,7 +107,6 @@ public class GuildsPlugin extends JavaPlugin {
         Command cmd = new CreateCommand(this);
         command.getCommands().put(cmd.getName(), cmd);
         this.getCommand("guild").setExecutor(command);
-
     }
 
     @Override
@@ -112,14 +128,14 @@ public class GuildsPlugin extends JavaPlugin {
     }
 
     public MessageManager getMessageManager() {
-        return messageManager;
+        return this.messageManager;
     }
 
     public BaseFileManager getUserFileManager() {
-        return userFileManager;
+        return this.userFileManager;
     }
 
     public BaseFileManager getGuildFileManager() {
-        return guildFileManager;
+        return this.guildFileManager;
     }
 }

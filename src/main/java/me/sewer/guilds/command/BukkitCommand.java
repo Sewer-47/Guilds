@@ -24,13 +24,13 @@ public class BukkitCommand implements CommandExecutor {
                 return command.onCommand(sender, args);
             } else {
                 sender.sendMessage("Nie odnaleziono komendy");
-                return false;
+                return true;
             }
         } else {
             for (Command command : commands.values()) {
                 sender.sendMessage(command.getName() + " - " + command.getDescription());
             }
-            return false;
+            return true;
         }
     }
 
