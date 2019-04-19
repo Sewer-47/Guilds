@@ -26,12 +26,7 @@ public class GuildValidityTask implements Runnable {
                 GuildTerrain terrain = guild.getTerrain();
                 Vector vector = terrain.getHome();
                 World world = terrain.getWorld().get();
-                String worldName;
-                if (world != null) {
-                    worldName = world.getName();
-                } else {
-                    worldName = "";
-                }
+                String worldName = (world == null) ? "" : world.getName();
                 ChatUtil.sendAll("guildExpire", this.plugin.getUserManager(), guild.getRender().getTag(), vector.getBlockX(), vector.getBlockY(), vector.getBlockZ(), worldName);
                 this.plugin.getGuildManager().unregisterGuild(guild);
                 guild.getMemebers().getMembers().forEach(user -> user.setGuild(null));

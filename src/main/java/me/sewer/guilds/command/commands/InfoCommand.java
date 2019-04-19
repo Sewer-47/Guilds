@@ -52,8 +52,8 @@ public class InfoCommand extends Command {
                     user.sendMessage("unkownPlayer");
                 }
             } else {
-                String pl = this.messageManager.getMessage(locale, "player");
-                user.sendMessage("correctUsage", "/info <" + pl + ">");
+                String player1 = this.messageManager.getMessage(locale, "player");
+                user.sendMessage("correctUsage", "/info <" + player1 + ">");
             }
         });
         return true;

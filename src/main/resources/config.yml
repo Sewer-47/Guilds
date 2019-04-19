@@ -5,6 +5,11 @@ guildValidity:
   hours: 0
   days: 0
   months: 1
+guildRender:
+  tagMinLengh: 1
+  tagMaxLengh: 5
+  nameMinLengh: 2
+  nameMaxLengh: 10
 
 MinDistanceBetweenGuilds: 50
 MinDistanceBetweenSpawn: 250

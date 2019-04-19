@@ -102,8 +102,14 @@ public class GuildsPlugin extends JavaPlugin {
         BukkitCommand command = new BukkitCommand(this);
         Command cmd = new CreateCommand(this);
         command.getCommands().put(cmd.getName(), cmd);
+        for (String alias : cmd.getAliases()) {
+            command.getCommands().put(alias, cmd);
+        }
         cmd = new InfoCommand(this);
         command.getCommands().put(cmd.getName(), cmd);
+        for (String alias : cmd.getAliases()) {
+            command.getCommands().put(alias, cmd);
+        }
         this.getCommand("guild").setExecutor(command);
     }
 
@@ -136,4 +142,5 @@ public class GuildsPlugin extends JavaPlugin {
     public BaseFileManager getGuildFileManager() {
         return this.guildFileManager;
     }
+
 }

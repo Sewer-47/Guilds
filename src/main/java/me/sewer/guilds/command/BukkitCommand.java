@@ -26,6 +26,8 @@ public class BukkitCommand implements CommandExecutor {
             User user = this.plugin.getUserManager().getUser(sender).get();
             if (args.length >= 1) {
                 Command command = this.commands.get(args[0]);
+
+
                 if (command != null) {
                     return command.onCommand(sender, args);
                 } else {

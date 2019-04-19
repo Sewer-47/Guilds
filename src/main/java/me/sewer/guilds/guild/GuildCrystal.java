@@ -24,8 +24,11 @@ public class GuildCrystal implements Listener {
     }
 
     public void create() {
-        Location location = new Location(world.get(), this.location.getX(), this.location.getY(), this.location.getZ());
-        this.world.get().spawnEntity(location, EntityType.ENDER_CRYSTAL);
+        if (this.world.get() != null) {
+            World world = this.world.get();
+            Location location = new Location(world, this.location.getX(), this.location.getY(), this.location.getZ());
+            world.spawnEntity(location, EntityType.ENDER_CRYSTAL);
+        }
     }
 
     @EventHandler
