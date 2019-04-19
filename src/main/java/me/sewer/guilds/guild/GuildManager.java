@@ -54,4 +54,8 @@ public class GuildManager {
     private Optional<Guild> byName(String name) {
         return Optional.ofNullable(this.byName.get(name));
     }
+
+    public Collection<Guild> getAll() {
+        return this.byTag.values();
+    }
 }

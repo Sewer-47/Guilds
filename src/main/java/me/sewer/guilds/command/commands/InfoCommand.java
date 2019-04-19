@@ -28,27 +28,34 @@ public class InfoCommand extends Command {
     @Override
     public boolean onCommand(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        if (Bukkit.getPlayer(args[1]) != null) {
-            Player target = Bukkit.getPlayer(args[1]);
-            this.userManager.getUser(player).ifPresent(user -> {
-                this.userManager.getUser(target).ifPresent(targetUser -> {
-                    Locale locale = user.getLocale();
-                    String tag;
-                    String name;
-                    if (targetUser.getGuild().isPresent()) {
-                        Guild guild = targetUser.getGuild().get();
-                        GuildRender render = guild.getRender();
-                        tag = this.messageManager.getMessage(locale, "guildTag", render.getTag());
-                        name = this.messageManager.getMessage(locale, "guildName", render.getName());
-                    } else {
-                        String lack = this.messageManager.getMessage(locale, "lack");
-                        tag = this.messageManager.getMessage(locale, "guildTag", lack);
-                        name = this.messageManager.getMessage(locale, "guildName", lack);
-                    }
-                    user.sendMessage("playerInfo", target.getDisplayName(), targetUser.getPoints(), tag, name);
-                });
-            });
-        }
+        this.userManager.getUser(player).ifPresent(user -> {
+            Locale locale = user.getLocale();
+            if (args.length == 2) {
+                if (Bukkit.getPlayer(args[1]) != null) {
+                    Player target = Bukkit.getPlayer(args[1]);
+                    this.userManager.getUser(target).ifPresent(targetUser -> {
+                        String tag;
+                        String name;
+                        if (targetUser.getGuild().isPresent()) {
+                            Guild guild = targetUser.getGuild().get();
+                            GuildRender render = guild.getRender();
+                            tag = this.messageManager.getMessage(locale, "guildTag", render.getTag());
+                            name = this.messageManager.getMessage(locale, "guildName", render.getName());
+                        } else {
+                            String lack = this.messageManager.getMessage(locale, "lack");
+                            tag = this.messageManager.getMessage(locale, "guildTag", lack);
+                            name = this.messageManager.getMessage(locale, "guildName", lack);
+                        }
+                        user.sendMessage("playerInfo", target.getDisplayName(), targetUser.getPoints(), tag, name);
+                    });
+                } else {
+                    user.sendMessage("unkownPlayer");
+                }
+            } else {
+                String pl = this.messageManager.getMessage(locale, "player");
+                user.sendMessage("correctUsage", "/info <" + pl + ">");
+            }
+        });
         return true;
     }
 }

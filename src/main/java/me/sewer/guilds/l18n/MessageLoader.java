@@ -4,9 +4,9 @@ import me.sewer.guilds.GuildsPlugin;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.logging.Level;
 
 public class MessageLoader {
@@ -41,5 +41,61 @@ public class MessageLoader {
            this.plugin.getLogger().log(Level.SEVERE, "Cannot load language file " + name + " ", e);
        }
        this.plugin.getMessageManager().registerLocale(messageMap);
+    }
+
+    public void unpack(File path) {
+        File folder = new File(this.plugin.getDataFolder(), "l18n");
+        if (!folder.exists() && !folder.isDirectory()) {
+            folder.mkdirs();
+            this.plugin.getLogger().log(Level.INFO, "Folder /Guilds/l18n/ was created!");
+        }
+        JarFile jarFile;
+        try {
+            jarFile = new JarFile(path);
+        } catch (IOException e) {
+            this.plugin.getLogger().log(Level.SEVERE, "Error occurred while loading file caused by exception", e);
+            return;
+        }
+        Enumeration enumEntries = jarFile.entries();
+        while (enumEntries.hasMoreElements()) {
+            JarEntry entry = (JarEntry) enumEntries.nextElement();
+            File file = new File(this.plugin.getDataFolder() + File.separator + entry.getName());
+            if (!Arrays.asList(folder.listFiles()).contains(file)) {
+                if (!entry.isDirectory() && file.getName().endsWith(".properties")) {
+                    InputStream in = null;
+                    OutputStream out = null;
+                    try {
+                        in = new BufferedInputStream(jarFile.getInputStream(entry));
+                        out = new BufferedOutputStream(new FileOutputStream(file));
+                        byte[] buffer = new byte[2048];
+                        while (true) {
+                            int nBytes = in.read(buffer);
+                            if (nBytes <= 0) {
+                                break;
+                            }
+                            out.write(buffer, 0, nBytes);
+                        }
+                        out.flush();
+                    } catch (IOException e) {
+                        this.plugin.getLogger().log(Level.SEVERE, "Error occurred while loading file" + file.getName() + "caused by exception", e);
+                    } finally {
+                        if (out != null) {
+                            try {
+                                out.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (in != null) {
+                            try {
+                                in.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

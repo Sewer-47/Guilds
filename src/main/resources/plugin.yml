@@ -5,3 +5,7 @@ authors:
   - Sewer
 commands:
   guild:
+    usage: Guilds command
+    aliases:
+      - g
+      - gildia

@@ -22,6 +22,7 @@ import me.sewer.guilds.user.User;
 import me.sewer.guilds.user.UserFileManager;
 import me.sewer.guilds.user.UserListeners;
 import me.sewer.guilds.user.UserManager;
+import me.sewer.guilds.validity.guild.GuildValidityTask;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -31,9 +32,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.io.File;
-import java.util.Locale;
-import java.util.logging.Level;
+import java.util.*;
 
 public class GuildsPlugin extends JavaPlugin {
 
@@ -48,14 +47,6 @@ public class GuildsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        File folder = new File(this.getDataFolder(), "l18n");
-        if (!folder.exists() && !folder.isDirectory()) {
-            folder.mkdirs();
-            this.getLogger().log(Level.INFO, "Folder /Guilds/l18n/ was created!");
-        }
-        this.saveResource("l18n/en_US.properties", false);
-        this.saveResource("l18n/pl_PL.properties", false);
-
         MessageLoader messageLoader = new MessageLoader(this);
         PluginManager pluginManager = this.getServer().getPluginManager();
         BukkitScheduler scheduler = this.getServer().getScheduler();
@@ -76,6 +67,7 @@ public class GuildsPlugin extends JavaPlugin {
         this.userFileManager = new UserFileManager(this);
         this.guildFileManager = new GuildFileManager(this);
 
+        messageLoader.unpack(this.getFile().getAbsoluteFile());
         messageLoader.loadAll();
 
         for (World world : Bukkit.getWorlds()) {
@@ -88,6 +80,7 @@ public class GuildsPlugin extends JavaPlugin {
         }
 
         scheduler.scheduleAsyncRepeatingTask(this, new RegionTask(this), 1L, 5L);
+        scheduler.scheduleAsyncRepeatingTask(this, new GuildValidityTask(this), 1L, 20L * 6);
 
         for (Listener listener : new Listener[] {
                 new UserListeners(this),

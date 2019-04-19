@@ -1,5 +1,6 @@
 package me.sewer.guilds.util;
 
+import me.sewer.guilds.user.UserManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 
@@ -24,10 +25,9 @@ public final class ChatUtil {
         Bukkit.getLogger().log(level, ChatColor.stripColor(Objects.requireNonNull(message)));
     }
 
-    public static void sendAll(String message, boolean console) {
-        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(color(message)));
-        if (console) {
-            sendConsole(message);
-        }
+    public static void sendAll(String message, UserManager userManager, Object... params) {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            userManager.getUser(player).ifPresent(user -> user.sendMessage(message, params));
+        });
     }
 }

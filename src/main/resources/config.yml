@@ -1,4 +1,10 @@
 defaultLang: pl_PL
 startPoints: 500
+guildValidity:
+  minutes: 0
+  hours: 0
+  days: 0
+  months: 1
+
 MinDistanceBetweenGuilds: 50
 MinDistanceBetweenSpawn: 250
