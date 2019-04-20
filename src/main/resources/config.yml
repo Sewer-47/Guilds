@@ -1,10 +1,12 @@
 defaultLang: pl_PL
 startPoints: 500
+
 guildValidity:
   minutes: 0
   hours: 0
   days: 0
   months: 1
+
 noForeignInteractions:
   - chest
   - ender_chest
@@ -18,14 +20,19 @@ chatVariables:
     guildRank: "{@GRANK}" #TODO
     guildLives: "{@GLIVES}" #TODO
 
+minDistanceToSpawn: 250
+minDistanceBetweenGuilds: 50
+
+allowedWorlds:
+  - world
+
+
 #TODO
 guildRender:
   tagMinLengh: 1
   tagMaxLengh: 5
   nameMinLengh: 2
   nameMaxLengh: 10
-minDistanceBetweenGuilds: 50
-minDistanceBetweenSpawn: 250
 regionsEnabled: true
 tablistEnabled: true
 tntExplosionInGuildCooldown: 120s

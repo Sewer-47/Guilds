@@ -108,7 +108,7 @@ public class GuildsPlugin extends JavaPlugin {
 
 
         BukkitCommand command = new BukkitCommand(this);
-        final Command createCommand = new CreateCommand(this);
+        final Command createCommand = new CreateCommand(this, this.getConfig());
         command.getCommands().put(createCommand.getName(), createCommand);
         createCommand.getAliases().forEach(alias -> command.getCommands().put(alias, createCommand));
 

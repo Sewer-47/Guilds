@@ -12,9 +12,11 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -23,23 +25,50 @@ public class CreateCommand extends Command {
     public static final String NAME = "create";
     public static final String DESCRIPTION = "zakladanie gildii";
     private final GuildsPlugin plugin;
+    private final GuildManager guildManager;
+    private final int spawnDistance;
+    private final int guildDistance;
+    private final List<String> allowedWorlds;
 
-    public CreateCommand(GuildsPlugin plugin) {
+    public CreateCommand(GuildsPlugin plugin, FileConfiguration configuration) {
         super(NAME, DESCRIPTION, "zaloz");
         this.plugin = plugin;
+        this.guildManager = plugin.getGuildManager();
+        this.spawnDistance = configuration.getInt("minDistanceToSpawn");
+        this.guildDistance = configuration.getInt("minDistanceBetweenGuilds");
+        this.allowedWorlds = configuration.getStringList("allowedWorlds");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, String[] args) {
         this.plugin.getUserManager().getUser(sender).ifPresent(user ->  {
             if (args.length == 3) {
-
                 if (!user.getGuild().isPresent()) {
+                    Location location = user.getBukkit().get().getLocation();
+
+                    if (location.distance(location.getWorld().getSpawnLocation()) <= spawnDistance) {
+                        user.sendMessage("tooNearSpawn");
+                        return;
+                    }
+
+                    for (Guild guild : this.guildManager.getAll()) { //Cant use lambda :(
+                        Vector home = guild.getTerrain().getHome();
+                        if (home.distance(location.toVector()) <= guildDistance) {
+                            user.sendMessage("tooNearOtherGuild");
+                            return;
+                        }
+                    }
+
+                    if (!this.allowedWorlds.contains(location.getWorld().getName())) {
+                        user.sendMessage("worldCreationBlocked");
+                        return;
+                    }
+
+
                     Random random = new Random();
                     UUID uniqueId = new UUID(random.nextLong(), random.nextLong());
                     GuildRender render = new GuildRender(args[1], args[2]);
                     GuildMemebers memebers = new GuildMemebers(user);
-                    Location location = user.getBukkit().get().getLocation();
                     World world = location.getWorld();
 
                     Vector vectorMin = location.toVector();
@@ -58,11 +87,11 @@ public class CreateCommand extends Command {
 
 
                     ConfigurationSection expireYaml = this.plugin.getConfig().getConfigurationSection("guildValidity");
-                    LocalDateTime expire = LocalDateTime.now();
-                    expire.plusMinutes(expireYaml.getInt("minutes"));
-                    expire.plusHours(expireYaml.getInt("hours"));
-                    expire.plusDays(expireYaml.getInt("days"));
-                    expire.plusMonths(expireYaml.getInt("months"));
+                    LocalDateTime expire = LocalDateTime.now()
+                            .plusMinutes(expireYaml.getInt("minutes"))
+                            .plusHours(expireYaml.getInt("hours"))
+                            .plusDays(expireYaml.getInt("days"))
+                            .plusMonths(expireYaml.getInt("months"));
                     GuildValidity validity = new GuildValidity(expire);
 
                     GuildCrystal crystal = new GuildCrystal(render, memebers, terrain, this.plugin);
@@ -75,8 +104,7 @@ public class CreateCommand extends Command {
 
                         crystal.create();
                         Bukkit.getPluginManager().registerEvents(crystal, this.plugin);
-
-                        this.plugin.getGuildManager().registerGuild(guild);
+                        this.guildManager.registerGuild(guild);
                         this.plugin.getRegionManager().byWorldId(world.getUID()).add(region);
                         user.setGuild(guild);
                         user.sendMessage("guildCreate", render.getTag(), render.getName());

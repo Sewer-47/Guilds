@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManager {
 
-    private final Map<UUID, User> byUniqueId = new ConcurrentHashMap<>();
+    private final Map<UUID, User> byUniqueId = new ConcurrentHashMap<>(); //Async
     private final Map<String, User> byUsername = new ConcurrentHashMap<>();
 
     public Optional<User> getUser(CommandSender sender) {

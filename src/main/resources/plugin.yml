@@ -1,11 +1,11 @@
 name: Guilds
-version: 0.1
+version: 0.2
 main: me.sewer.guilds.GuildsPlugin
 authors:
   - Sewer
 commands:
   guild:
-    usage: Guilds command
+    usage: Guilds commands
     aliases:
       - g
       - gildia

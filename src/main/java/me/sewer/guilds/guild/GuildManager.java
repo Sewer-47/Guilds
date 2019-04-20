@@ -4,12 +4,13 @@ import me.sewer.guilds.region.Region;
 import org.bukkit.Location;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class GuildManager {
 
-    private final Map<String, Guild> byTag = new HashMap<>();
-    private final Map<String, Guild> byName = new HashMap<>();
+    private final Map<String, Guild> byTag = new ConcurrentHashMap<>(); //Async
+    private final Map<String, Guild> byName = new ConcurrentHashMap<>();
 
     public void registerGuild(Guild guild) {
         GuildRender render = guild.getRender();

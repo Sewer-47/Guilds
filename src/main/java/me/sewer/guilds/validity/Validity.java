@@ -22,6 +22,6 @@ public abstract class Validity implements IValidity {
 
     @Override
     public boolean hasExpired(LocalDateTime when) {
-        return !this.expires.isBefore(when);
+        return this.expires.isBefore(when);
     }
 }
