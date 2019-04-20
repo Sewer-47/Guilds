@@ -1,5 +1,6 @@
 package me.sewer.guilds.guild;
 
+import me.sewer.guilds.GuildsPlugin;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -7,20 +8,27 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
 
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
-public class GuildCrystal implements Listener {
+public class GuildCrystal implements Listener {  //THIS CLASS MUST BE REWRITED
 
     private final Vector location;
     private final Reference<World> world;
+    private final GuildsPlugin plugin;
+    private final GuildRender render;
+    private final GuildMemebers memebers;
+    private final GuildTerrain terrain;
 
-    public GuildCrystal(Location location) {
-        this.location = location.toVector();
-        this.world = new WeakReference<>(location.getWorld());
+    public GuildCrystal(GuildRender render, GuildMemebers memebers, GuildTerrain terrain, GuildsPlugin plugin) { ;
+        this.location = terrain.getHome();
+        this.world = terrain.getWorld();
+        this.plugin = plugin;
+        this.render = render;
+        this.memebers = memebers;
+        this.terrain = terrain;
     }
 
     public void create() {
@@ -42,6 +50,15 @@ public class GuildCrystal implements Listener {
     }
 
     @EventHandler
-    public void onInteract(EntityInteractEvent event) {
+    public void onInteract(PlayerInteractEntityEvent event) {
+        Entity entity = event.getRightClicked();
+        if (entity != null && entity.getType() == EntityType.ENDER_CRYSTAL) {
+            if (entity.getLocation().toVector().distance(this.terrain.getHome()) <= 1) {
+                this.plugin.getUserManager().getUser(event.getPlayer()).ifPresent(user -> {
+                    user.sendMessage("guildInfo", this.render.getTag(), this.render.getName(), "members", this.memebers.getOwner().getName());
+                    return;
+                });
+            }
+        }
     }
 }

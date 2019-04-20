@@ -5,11 +5,40 @@ guildValidity:
   hours: 0
   days: 0
   months: 1
+noForeignInteractions:
+  - chest
+  - ender_chest
+  - lever
+
+chatVariables:
+    rank: "{@RANK}"
+
+    guildTag: "{@TAG}"
+    guildName: "{@NAME}"
+    guildRank: "{@GRANK}" #TODO
+    guildLives: "{@GLIVES}" #TODO
+
+#TODO
 guildRender:
   tagMinLengh: 1
   tagMaxLengh: 5
   nameMinLengh: 2
   nameMaxLengh: 10
+minDistanceBetweenGuilds: 50
+minDistanceBetweenSpawn: 250
+regionsEnabled: true
+tablistEnabled: true
+tntExplosionInGuildCooldown: 120s
 
-MinDistanceBetweenGuilds: 50
-MinDistanceBetweenSpawn: 250
+minMembersInGuildToSeeRank: 2
+
+#ENDERCRYSTALE MAJA BYC ZROBIONE PAKIETAMI
+#DUMMY Z RANKIEM
+#NISZCZENIE BLOKOW PRZEZ TNT + uwzglednienie szansy na to
+#PODBIJANIE GILDII
+#kOMENDY ADMINA
+#MAKSYMALNA ILOSC GRACZY W GILDII, sojuszy i wrogow
+#PRYWATNY CZAT GILDII
+#TOPKA RANKINGU
+#INFO GRACZA TO KD I RANKING
+#POTRZEBNE ITEMY DO ZALOZENIA GILDII

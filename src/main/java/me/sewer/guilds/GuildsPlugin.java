@@ -26,6 +26,7 @@ import me.sewer.guilds.validity.guild.GuildValidityTask;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -79,6 +80,13 @@ public class GuildsPlugin extends JavaPlugin {
             this.userManager.registerUser(user);
         }
 
+        Map<String, String> messagesMap = new HashMap<>();
+        ConfigurationSection configurationSection = this.getConfig().getConfigurationSection("chatVariables");
+        for (String key : configurationSection.getKeys(false)) {
+                messagesMap.put(key, configurationSection.getString(key));
+        }
+
+
         scheduler.scheduleAsyncRepeatingTask(this, new RegionTask(this), 1L, 5L);
         scheduler.scheduleAsyncRepeatingTask(this, new GuildValidityTask(this), 1L, 20L * 6);
 
@@ -89,7 +97,7 @@ public class GuildsPlugin extends JavaPlugin {
                 new MessageListeners(this),
 
                 new PlayerJoinListener(this),
-                new AsyncPlayerChatListener(this),
+                new AsyncPlayerChatListener(this, messagesMap),
                 new PlayerInteractEntityListener(this),
 
                 new GuildRegionListeners(this),
@@ -100,16 +108,13 @@ public class GuildsPlugin extends JavaPlugin {
 
 
         BukkitCommand command = new BukkitCommand(this);
-        Command cmd = new CreateCommand(this);
-        command.getCommands().put(cmd.getName(), cmd);
-        for (String alias : cmd.getAliases()) {
-            command.getCommands().put(alias, cmd);
-        }
-        cmd = new InfoCommand(this);
-        command.getCommands().put(cmd.getName(), cmd);
-        for (String alias : cmd.getAliases()) {
-            command.getCommands().put(alias, cmd);
-        }
+        final Command createCommand = new CreateCommand(this);
+        command.getCommands().put(createCommand.getName(), createCommand);
+        createCommand.getAliases().forEach(alias -> command.getCommands().put(alias, createCommand));
+
+        final Command infoCommand = new InfoCommand(this);
+        command.getCommands().put(infoCommand.getName(), infoCommand);
+        infoCommand.getAliases().forEach(alias -> command.getCommands().put(alias, infoCommand));
         this.getCommand("guild").setExecutor(command);
     }
 
@@ -144,3 +149,25 @@ public class GuildsPlugin extends JavaPlugin {
     }
 
 }
+/*
+chatVariables:
+  player:
+    rank: {@RANK}
+    guildTag: {@TAG}
+    guildName: {@NAME}
+  guild:
+    rank: {@GRANK}
+    guildTag: {@GTAG}
+    guildName: {@GNAME}
+    lives: {@GLIVES}
+
+            ConfigurationSection configurationSection = this.plugin.getConfig().getConfigurationSection("chatVariables");
+        ConfigurationSection player = configurationSection.getConfigurationSection("player");
+        ConfigurationSection guild = configurationSection.getConfigurationSection("guild");
+        for (String key : player.getKeys(false)) {
+            messages.put(key, player.getString(key));
+        }
+        for (String key : guild.getKeys(false)) {
+            messages.put(key, player.getString(key));
+        }
+ */

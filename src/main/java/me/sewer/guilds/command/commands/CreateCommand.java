@@ -56,7 +56,6 @@ public class CreateCommand extends Command {
                     GuildTerrain terrain = new GuildTerrain(region, location);
                     GuildRelations relations = new GuildRelations();
 
-                    GuildCrystal crystal = new GuildCrystal(location);
 
                     ConfigurationSection expireYaml = this.plugin.getConfig().getConfigurationSection("guildValidity");
                     LocalDateTime expire = LocalDateTime.now();
@@ -65,6 +64,8 @@ public class CreateCommand extends Command {
                     expire.plusDays(expireYaml.getInt("days"));
                     expire.plusMonths(expireYaml.getInt("months"));
                     GuildValidity validity = new GuildValidity(expire);
+
+                    GuildCrystal crystal = new GuildCrystal(render, memebers, terrain, this.plugin);
 
                     Guild guild = new Guild(uniqueId, render, memebers, terrain, relations, crystal, validity);
 
