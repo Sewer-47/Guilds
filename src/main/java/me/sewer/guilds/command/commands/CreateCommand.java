@@ -29,6 +29,11 @@ public class CreateCommand extends Command {
     private final int spawnDistance;
     private final int guildDistance;
     private final List<String> allowedWorlds;
+    private final boolean guildCreatingEnabled;
+    private final int tagMinLength;
+    private final int tagMaxLength;
+    private final int nameMinLength;
+    private final int nameMaxLength;
 
     public CreateCommand(GuildsPlugin plugin, FileConfiguration configuration) {
         super(NAME, DESCRIPTION, "zaloz");
@@ -37,6 +42,12 @@ public class CreateCommand extends Command {
         this.spawnDistance = configuration.getInt("minDistanceToSpawn");
         this.guildDistance = configuration.getInt("minDistanceBetweenGuilds");
         this.allowedWorlds = configuration.getStringList("allowedWorlds");
+        this.guildCreatingEnabled = configuration.getBoolean("guildCreatingEnabled");
+        ConfigurationSection render = configuration.getConfigurationSection("guildRender");
+        this.tagMinLength = render.getInt("tagMinLength");
+        this.tagMaxLength = render.getInt("tagMaxLength");
+        this.nameMinLength = render.getInt("nameMinLength");
+        this.nameMaxLength = render.getInt("nameMaxLength");
     }
 
     @Override
@@ -44,7 +55,37 @@ public class CreateCommand extends Command {
         this.plugin.getUserManager().getUser(sender).ifPresent(user ->  {
             if (args.length == 3) {
                 if (!user.getGuild().isPresent()) {
+                    if (!this.guildCreatingEnabled) {
+                        user.sendMessage("guildCreatingIsDisabled");
+                        return;
+                    }
+
+                    if (args[1].length() < this.tagMinLength || args[1].length() > this.tagMaxLength) {
+                        user.sendMessage("correctTagLength", this.tagMinLength, this.tagMaxLength);
+                        return;
+                    }
+
+                    if (args[2].length() < this.nameMinLength || args[2].length() > this.nameMaxLength) {
+                        user.sendMessage("correctNameLength", this.nameMinLength, this.nameMaxLength);
+                        return;
+                    }
+
                     Location location = user.getBukkit().get().getLocation();
+                    if (this.guildManager.byTag(args[1]).isPresent()) {
+                        user.sendMessage("tagExists");
+                        return;
+                    }
+
+                    if (this.guildManager.byName(args[2]).isPresent()) {
+                        user.sendMessage("nameExists");
+                        return;
+                    }
+
+                    if (!this.allowedWorlds.contains(location.getWorld().getName())) {
+                        user.sendMessage("worldCreationBlocked");
+                        return;
+                    }
+
 
                     if (location.distance(location.getWorld().getSpawnLocation()) <= spawnDistance) {
                         user.sendMessage("tooNearSpawn");
@@ -58,12 +99,6 @@ public class CreateCommand extends Command {
                             return;
                         }
                     }
-
-                    if (!this.allowedWorlds.contains(location.getWorld().getName())) {
-                        user.sendMessage("worldCreationBlocked");
-                        return;
-                    }
-
 
                     Random random = new Random();
                     UUID uniqueId = new UUID(random.nextLong(), random.nextLong());
@@ -86,12 +121,12 @@ public class CreateCommand extends Command {
                     GuildRelations relations = new GuildRelations();
 
 
-                    ConfigurationSection expireYaml = this.plugin.getConfig().getConfigurationSection("guildValidity");
+                    ConfigurationSection configurationSection = this.plugin.getConfig().getConfigurationSection("guildValidity");
                     LocalDateTime expire = LocalDateTime.now()
-                            .plusMinutes(expireYaml.getInt("minutes"))
-                            .plusHours(expireYaml.getInt("hours"))
-                            .plusDays(expireYaml.getInt("days"))
-                            .plusMonths(expireYaml.getInt("months"));
+                            .plusMinutes(configurationSection.getInt("minutes"))
+                            .plusHours(configurationSection.getInt("hours"))
+                            .plusDays(configurationSection.getInt("days"))
+                            .plusMonths(configurationSection.getInt("months"));
                     GuildValidity validity = new GuildValidity(expire);
 
                     GuildCrystal crystal = new GuildCrystal(render, memebers, terrain, this.plugin);

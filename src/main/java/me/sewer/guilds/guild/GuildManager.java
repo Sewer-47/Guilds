@@ -48,11 +48,11 @@ public class GuildManager {
                 .findFirst();
     }
 
-    private Optional<Guild> byTag(String tag) {
+    public Optional<Guild> byTag(String tag) {
         return Optional.ofNullable(this.byTag.get(tag));
     }
 
-    private Optional<Guild> byName(String name) {
+    public Optional<Guild> byName(String name) {
         return Optional.ofNullable(this.byName.get(name));
     }
 

@@ -1,6 +1,8 @@
 defaultLang: pl_PL
 startPoints: 500
 
+guildCreatingEnabled: true
+
 guildValidity:
   minutes: 0
   hours: 0
@@ -26,13 +28,13 @@ minDistanceBetweenGuilds: 50
 allowedWorlds:
   - world
 
+guildRender:
+  tagMinLength: 1
+  tagMaxLength: 5
+  nameMinLength: 2
+  nameMaxLength: 10
 
 #TODO
-guildRender:
-  tagMinLengh: 1
-  tagMaxLengh: 5
-  nameMinLengh: 2
-  nameMaxLengh: 10
 regionsEnabled: true
 tablistEnabled: true
 tntExplosionInGuildCooldown: 120s

@@ -149,25 +149,3 @@ public class GuildsPlugin extends JavaPlugin {
     }
 
 }
-/*
-chatVariables:
-  player:
-    rank: {@RANK}
-    guildTag: {@TAG}
-    guildName: {@NAME}
-  guild:
-    rank: {@GRANK}
-    guildTag: {@GTAG}
-    guildName: {@GNAME}
-    lives: {@GLIVES}
-
-            ConfigurationSection configurationSection = this.plugin.getConfig().getConfigurationSection("chatVariables");
-        ConfigurationSection player = configurationSection.getConfigurationSection("player");
-        ConfigurationSection guild = configurationSection.getConfigurationSection("guild");
-        for (String key : player.getKeys(false)) {
-            messages.put(key, player.getString(key));
-        }
-        for (String key : guild.getKeys(false)) {
-            messages.put(key, player.getString(key));
-        }
- */
