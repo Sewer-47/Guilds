@@ -40,7 +40,7 @@ public class BukkitCommand implements CommandExecutor {
                 }
             }
         } else {
-            ChatUtil.sendConsole(Level.INFO, "Only players can use this command");
+            ChatUtil.sendConsole(Level.INFO, "Only players can use this modules");
         }
         return true;
     }

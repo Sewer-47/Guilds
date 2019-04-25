@@ -2,7 +2,7 @@ package me.sewer.guilds.validity;
 
 import java.time.LocalDateTime;
 
-public abstract class Validity implements IValidity {
+public class Validity implements IValidity {
 
     private final LocalDateTime expires;
 

@@ -36,12 +36,9 @@ public class MessageManager {
     }
 
     public String getMessage(Locale locale, String message, Object... params) {
-        String text;
-        if (this.localeMap.containsKey(locale)) {
-            text = this.localeMap.get(locale).get(message);
-        } else {
-            text = this.localeMap.get(this.fallback).get(message);
-        }
+        String text = this.localeMap.containsKey(locale)
+                ? this.localeMap.get(locale).get(message)
+                : this.localeMap.get(this.fallback).get(message);
         return MessageFormat.format(text, params);
     }
 }

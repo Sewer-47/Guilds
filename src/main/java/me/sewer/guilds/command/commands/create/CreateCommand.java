@@ -1,4 +1,4 @@
-package me.sewer.guilds.command.commands;
+package me.sewer.guilds.command.commands.create;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.command.Command;
@@ -7,16 +7,15 @@ import me.sewer.guilds.guild.event.GuildCreateEvent;
 import me.sewer.guilds.region.CuboidRegion;
 import me.sewer.guilds.region.Region;
 import me.sewer.guilds.util.ChatUtil;
+import me.sewer.guilds.validity.Validity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -26,28 +25,13 @@ public class CreateCommand extends Command {
     public static final String DESCRIPTION = "zakladanie gildii";
     private final GuildsPlugin plugin;
     private final GuildManager guildManager;
-    private final int spawnDistance;
-    private final int guildDistance;
-    private final List<String> allowedWorlds;
-    private final boolean guildCreatingEnabled;
-    private final int tagMinLength;
-    private final int tagMaxLength;
-    private final int nameMinLength;
-    private final int nameMaxLength;
+    private final CreateOptions options;
 
-    public CreateCommand(GuildsPlugin plugin, FileConfiguration configuration) {
+    public CreateCommand(GuildsPlugin plugin, CreateOptions options) {
         super(NAME, DESCRIPTION, "zaloz");
         this.plugin = plugin;
         this.guildManager = plugin.getGuildManager();
-        this.spawnDistance = configuration.getInt("minDistanceToSpawn");
-        this.guildDistance = configuration.getInt("minDistanceBetweenGuilds");
-        this.allowedWorlds = configuration.getStringList("allowedWorlds");
-        this.guildCreatingEnabled = configuration.getBoolean("guildCreatingEnabled");
-        ConfigurationSection render = configuration.getConfigurationSection("guildRender");
-        this.tagMinLength = render.getInt("tagMinLength");
-        this.tagMaxLength = render.getInt("tagMaxLength");
-        this.nameMinLength = render.getInt("nameMinLength");
-        this.nameMaxLength = render.getInt("nameMaxLength");
+        this.options = options;
     }
 
     @Override
@@ -55,20 +39,6 @@ public class CreateCommand extends Command {
         this.plugin.getUserManager().getUser(sender).ifPresent(user ->  {
             if (args.length == 3) {
                 if (!user.getGuild().isPresent()) {
-                    if (!this.guildCreatingEnabled) {
-                        user.sendMessage("guildCreatingIsDisabled");
-                        return;
-                    }
-
-                    if (args[1].length() < this.tagMinLength || args[1].length() > this.tagMaxLength) {
-                        user.sendMessage("correctTagLength", this.tagMinLength, this.tagMaxLength);
-                        return;
-                    }
-
-                    if (args[2].length() < this.nameMinLength || args[2].length() > this.nameMaxLength) {
-                        user.sendMessage("correctNameLength", this.nameMinLength, this.nameMaxLength);
-                        return;
-                    }
 
                     Location location = user.getBukkit().get().getLocation();
                     if (this.guildManager.byTag(args[1]).isPresent()) {
@@ -79,25 +49,6 @@ public class CreateCommand extends Command {
                     if (this.guildManager.byName(args[2]).isPresent()) {
                         user.sendMessage("nameExists");
                         return;
-                    }
-
-                    if (!this.allowedWorlds.contains(location.getWorld().getName())) {
-                        user.sendMessage("worldCreationBlocked");
-                        return;
-                    }
-
-
-                    if (location.distance(location.getWorld().getSpawnLocation()) <= spawnDistance) {
-                        user.sendMessage("tooNearSpawn");
-                        return;
-                    }
-
-                    for (Guild guild : this.guildManager.getAll()) { //Cant use lambda :(
-                        Vector home = guild.getTerrain().getHome();
-                        if (home.distance(location.toVector()) <= guildDistance) {
-                            user.sendMessage("tooNearOtherGuild");
-                            return;
-                        }
                     }
 
                     Random random = new Random();
@@ -127,7 +78,7 @@ public class CreateCommand extends Command {
                             .plusHours(configurationSection.getInt("hours"))
                             .plusDays(configurationSection.getInt("days"))
                             .plusMonths(configurationSection.getInt("months"));
-                    GuildValidity validity = new GuildValidity(expire);
+                    Validity validity = new Validity(expire);
 
                     GuildCrystal crystal = new GuildCrystal(render, memebers, terrain, this.plugin);
 

@@ -1,6 +1,7 @@
 package me.sewer.guilds.guild;
 
 import me.sewer.guilds.Unique;
+import me.sewer.guilds.validity.Validity;
 
 import java.util.UUID;
 
@@ -12,9 +13,9 @@ public class Guild implements Unique {
     private final GuildTerrain terrain;
     private final GuildRelations relations;
     private final GuildCrystal crystal;
-    private final GuildValidity validity;
+    private final Validity validity;
 
-    public Guild(UUID uniqueId, GuildRender render, GuildMemebers memebers, GuildTerrain terrain, GuildRelations relations, GuildCrystal crystal, GuildValidity validity) {
+    public Guild(UUID uniqueId, GuildRender render, GuildMemebers memebers, GuildTerrain terrain, GuildRelations relations, GuildCrystal crystal, Validity validity) {
         this.uniqueId = uniqueId;
         this.render = render;
         this.memebers = memebers;
@@ -49,7 +50,7 @@ public class Guild implements Unique {
         return crystal;
     }
 
-    public GuildValidity getValidity() {
+    public Validity getValidity() {
         return validity;
     }
 }

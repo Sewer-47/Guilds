@@ -34,6 +34,12 @@ guildRender:
   nameMinLength: 2
   nameMaxLength: 10
 
+  tagBlackList: #TODO
+    - "example"
+
+  nameBlackList: #TODO
+    - "example name"
+
 #TODO
 regionsEnabled: true
 tablistEnabled: true

@@ -9,8 +9,7 @@ import java.util.logging.Level;
 
 public final class ChatUtil {
 
-    private ChatUtil(){
-
+    private ChatUtil() {
     }
 
     public static String color(String message) {
@@ -26,8 +25,6 @@ public final class ChatUtil {
     }
 
     public static void sendAll(String message, UserManager userManager, Object... params) {
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            userManager.getUser(player).ifPresent(user -> user.sendMessage(message, params));
-        });
+        userManager.getOnline().forEach(user -> user.sendMessage(message, params));
     }
 }

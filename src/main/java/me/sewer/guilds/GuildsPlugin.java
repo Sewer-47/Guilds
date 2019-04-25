@@ -1,9 +1,11 @@
 package me.sewer.guilds;
 
+import me.sewer.guilds.module.Module;
 import me.sewer.guilds.command.BukkitCommand;
 import me.sewer.guilds.command.Command;
-import me.sewer.guilds.command.commands.CreateCommand;
+import me.sewer.guilds.command.commands.create.CreateCommand;
 import me.sewer.guilds.command.commands.InfoCommand;
+import me.sewer.guilds.command.commands.create.CreateOptions;
 import me.sewer.guilds.guild.GuildFileManager;
 import me.sewer.guilds.guild.GuildListeners;
 import me.sewer.guilds.guild.GuildManager;
@@ -14,10 +16,13 @@ import me.sewer.guilds.listener.AsyncPlayerChatListener;
 import me.sewer.guilds.listener.PlayerInteractEntityListener;
 import me.sewer.guilds.listener.GuildRegionListeners;
 import me.sewer.guilds.listener.PlayerJoinListener;
+import me.sewer.guilds.module.modules.*;
 import me.sewer.guilds.region.RegionListeners;
 import me.sewer.guilds.region.RegionManager;
 import me.sewer.guilds.region.RegionRegistry;
 import me.sewer.guilds.region.RegionTask;
+import me.sewer.guilds.tablist.Tablist;
+import me.sewer.guilds.tablist.TablistTask;
 import me.sewer.guilds.user.User;
 import me.sewer.guilds.user.UserFileManager;
 import me.sewer.guilds.user.UserListeners;
@@ -44,6 +49,8 @@ public class GuildsPlugin extends JavaPlugin {
 
     private BaseFileManager userFileManager;
     private BaseFileManager guildFileManager;
+
+    private Set<Module> modules;
 
 
     @Override
@@ -86,9 +93,16 @@ public class GuildsPlugin extends JavaPlugin {
                 messagesMap.put(key, configurationSection.getString(key));
         }
 
+        Map<Integer, String> slots = new HashMap<>();
+        slots.put(1, "hello");
+        slots.put(2, "world");
+        Tablist tablist = new Tablist(slots, "header", "footer");
 
-        scheduler.scheduleAsyncRepeatingTask(this, new RegionTask(this), 1L, 5L);
-        scheduler.scheduleAsyncRepeatingTask(this, new GuildValidityTask(this), 1L, 20L * 6);
+        TablistTask tablistTask = new TablistTask(tablist, this.userManager);
+
+        scheduler.runTaskTimerAsynchronously(this, tablistTask, 1L, 20L);
+        scheduler.runTaskTimerAsynchronously(this, new RegionTask(this), 1L, 5L);
+        scheduler.runTaskTimerAsynchronously(this, new GuildValidityTask(this), 1L, 20L * 6);
 
         for (Listener listener : new Listener[] {
                 new UserListeners(this),
@@ -106,9 +120,25 @@ public class GuildsPlugin extends JavaPlugin {
             pluginManager.registerEvents(listener, this);
         }
 
+        CreateOptions createOptions = new CreateOptions(this.getConfig());
+
+        this.modules = new HashSet<>();
+
+        for (Module module : new Module[] {
+                new CreationBanModule(createOptions),
+                new TagLengthModule(createOptions),
+                new NameLengthModule(createOptions),
+                new WorldModule(createOptions),
+                new SpawnModule(createOptions),
+                new OtherGuildDistanceModule(createOptions),
+        }) {
+            module.initialize(this);
+            module.setEnabled(true);
+            this.modules.add(module);
+        }
 
         BukkitCommand command = new BukkitCommand(this);
-        final Command createCommand = new CreateCommand(this, this.getConfig());
+        final Command createCommand = new CreateCommand(this, createOptions);
         command.getCommands().put(createCommand.getName(), createCommand);
         createCommand.getAliases().forEach(alias -> command.getCommands().put(alias, createCommand));
 
