@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ public class GuildRegionListeners implements Listener {
     private final GuildManager guildManager;
     private final UserManager userManager;
     private final List<Material> blockedMaterials;
+    private final List<String> blockedCommands;
 
     public GuildRegionListeners(GuildsPlugin plugin) {
         this.guildManager = plugin.getGuildManager();
@@ -36,6 +37,10 @@ public class GuildRegionListeners implements Listener {
             } else {
                 plugin.getLogger().log(Level.SEVERE, "Cannot parse material " + string);
             }
+        });
+        this.blockedCommands = new ArrayList<>();
+        plugin.getConfig().getStringList("blackListCommandsInGuildRegion").forEach(command -> {
+            this.blockedCommands.add(command);
         });
     }
 
@@ -110,6 +115,51 @@ public class GuildRegionListeners implements Listener {
                     });
                 });
             }
+        }
+    }
+
+    @EventHandler
+    public void onBucketFill(PlayerBucketFillEvent event) {
+        Player player = event.getPlayer();
+        this.userManager.getUser(player).ifPresent(user -> {
+            this.guildManager.getGuild(event.getBlockClicked().getLocation()).forEach(guild -> {
+                if (!guild.getMemebers().getMembers().contains(user)) {
+                    event.setCancelled(true);
+                    user.sendMessage("cantUseBucket");
+                    return;
+                }
+            });
+        });
+    }
+
+    @EventHandler
+    public void onBucketEmpty(PlayerBucketEmptyEvent event) {
+        Player player = event.getPlayer();
+        this.userManager.getUser(player).ifPresent(user -> {
+            this.guildManager.getGuild(event.getBlockClicked().getLocation()).forEach(guild -> {
+                if (!guild.getMemebers().getMembers().contains(user)) {
+                    event.setCancelled(true);
+                    user.sendMessage("cantUseBucket");
+                    return;
+                }
+            });
+        });
+    }
+
+    @EventHandler
+    public void onCommand(PlayerCommandPreprocessEvent event) {
+        String[] command = event.getMessage().substring(1).split(" ");
+        if (this.blockedCommands.contains(command[0])) {
+            Player player = event.getPlayer();
+            this.userManager.getUser(player).ifPresent(user -> {
+                this.guildManager.getGuild(player.getLocation()).forEach(guild -> {
+                    if (!guild.getMemebers().getMembers().contains(user)) {
+                        event.setCancelled(true);
+                        user.sendMessage("cantUseCommand");
+                        return;
+                    }
+                });
+            });
         }
     }
 }

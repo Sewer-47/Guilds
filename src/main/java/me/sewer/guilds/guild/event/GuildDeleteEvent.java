@@ -9,7 +9,8 @@ public class GuildDeleteEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final Guild guild;
 
-    public GuildDeleteEvent(Guild guild) {
+    public GuildDeleteEvent(Guild guild, boolean async) {
+        super(async);
         this.guild = guild;
     }
 

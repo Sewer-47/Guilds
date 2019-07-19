@@ -12,6 +12,7 @@ public class GuildRegionQuitEvent extends Event {
     private final Player who;
 
     public GuildRegionQuitEvent(Guild guild, Player who) {
+        super(true);
         this.guild = guild;
         this.who = who;
     }

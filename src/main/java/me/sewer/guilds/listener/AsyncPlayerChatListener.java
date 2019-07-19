@@ -3,8 +3,8 @@ package me.sewer.guilds.listener;
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.guild.GuildRender;
-import me.sewer.guilds.l18n.MessageManager;
-import me.sewer.guilds.util.ChatUtil;
+import me.sewer.guilds.i18n.MessageManager;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,12 +46,12 @@ public class AsyncPlayerChatListener implements Listener {
                 name = this.messageManager.getMessage(locale, "guildName", lack);
             }
                 String replaced = message
-                        .replace(this.messages.get("rank"), user.getPoints() + "")
+                        .replace(this.messages.get("rank"), user.getElo().getPoints() + "")
                         .replace(this.messages.get("guildTag"), tag)
                         .replace(this.messages.get("guildName"), name);
                 //Guild rank
                 //Guild lives
-            event.setMessage(ChatUtil.color(replaced));
+            event.setMessage(ChatColor.translateAlternateColorCodes('&', replaced));
         });
     }
 }

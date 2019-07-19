@@ -1,4 +1,4 @@
-package me.sewer.guilds.l18n;
+package me.sewer.guilds.i18n;
 
 import me.sewer.guilds.GuildsPlugin;
 import org.apache.commons.lang.StringUtils;
@@ -18,7 +18,7 @@ public class MessageLoader {
     }
 
     public void loadAll() {
-        File directory =  new File(plugin.getDataFolder(), "l18n");
+        File directory =  new File(plugin.getDataFolder(), "i18n");
         for (File file : directory.listFiles()) {
             this.plugin.getLogger().log(Level.INFO, "Loading language " + file.getName());
             this.load(file);
@@ -44,10 +44,10 @@ public class MessageLoader {
     }
 
     public void unpack(File path) {
-        File folder = new File(this.plugin.getDataFolder(), "l18n");
+        File folder = new File(this.plugin.getDataFolder(), "i18n");
         if (!folder.exists() && !folder.isDirectory()) {
             folder.mkdirs();
-            this.plugin.getLogger().log(Level.INFO, "Folder /Guilds/l18n/ was created!");
+            this.plugin.getLogger().log(Level.INFO, "Folder /Guilds/i18n/ was created!");
         }
         JarFile jarFile;
         try {

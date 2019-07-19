@@ -1,7 +1,6 @@
-package me.sewer.guilds.module.modules;
+package me.sewer.guilds.module.impl;
 
-import me.sewer.guilds.command.commands.create.CreateOptions;
-import me.sewer.guilds.guild.Guild;
+import me.sewer.guilds.command.impl.create.CreateOptions;
 import me.sewer.guilds.guild.event.GuildCreateEvent;
 import me.sewer.guilds.module.Module;
 import me.sewer.guilds.module.ModuleInfo;
@@ -26,12 +25,12 @@ public class OtherGuildDistanceModule extends Module {
         User user = event.getGuild().getMemebers().getOwner();
         Player player = user.getBukkit().get();
         Location location = player.getLocation();
-        for (Guild guild : this.getPlugin().getGuildManager().getAll()) { //Cant use lambda :(
+        this.getPlugin().getGuildManager().getAll().forEach(guild -> {
             Vector home = guild.getTerrain().getHome();
             if (home.distance(location.toVector()) <= this.options.guildDistance()) {
                 user.sendMessage("tooNearOtherGuild");
                 event.setCancelled(true);
             }
-        }
+        });
     }
 }

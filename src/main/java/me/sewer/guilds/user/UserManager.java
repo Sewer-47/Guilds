@@ -19,16 +19,14 @@ public class UserManager {
         if (sender instanceof Player) {
             return this.getUser((Player) sender);
         }
-
-        return null;
+        return Optional.empty();
     }
 
     public Optional<User> getUser(Entity entity) {
         if (entity instanceof Player) {
             return this.getUser(entity.getUniqueId());
         }
-
-        return null;
+        return Optional.empty();
     }
 
     public Optional<User> getUser(Player player) {

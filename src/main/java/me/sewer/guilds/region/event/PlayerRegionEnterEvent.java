@@ -12,6 +12,7 @@ public class PlayerRegionEnterEvent extends Event {
     private final Region region;
 
     public PlayerRegionEnterEvent(Player player, Region region) {
+        super(true);
         this.player = player;
         this.region = region;
     }

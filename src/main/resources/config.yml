@@ -22,6 +22,12 @@ chatVariables:
     guildRank: "{@GRANK}" #TODO
     guildLives: "{@GLIVES}" #TODO
 
+blocksCanBeDestroyedByTnt: #you can add your own blocks, and the chance of an explosion
+  obsidian: 50
+  enchanting_table: 10
+  #water: 90
+  #lava: 90
+
 minDistanceToSpawn: 250
 minDistanceBetweenGuilds: 50
 
@@ -35,25 +41,33 @@ guildRender:
   nameMaxLength: 10
 
   tagBlackList: #TODO
-    - "example"
+    - "fuck"
+    - "bpl" #XD
 
-  nameBlackList: #TODO
-    - "example name"
+  nameWordsBlackList: #TODO guild name cannot cointains this words
+    - "fuck"
+    - "kurwa"
+
+eloMultiplier: 30
+
+privateChatPrefix: "!"
+privateChatFormat: "&6[&c!&6]&7{0}:&f {1}"
+
+blackListCommandsInGuildRegion:
+  - "sethome"
 
 #TODO
 regionsEnabled: true
-tablistEnabled: true
 tntExplosionInGuildCooldown: 120s
 
 minMembersInGuildToSeeRank: 2
 
+#TODO
 #ENDERCRYSTALE MAJA BYC ZROBIONE PAKIETAMI
 #DUMMY Z RANKIEM
-#NISZCZENIE BLOKOW PRZEZ TNT + uwzglednienie szansy na to
 #PODBIJANIE GILDII
 #kOMENDY ADMINA
 #MAKSYMALNA ILOSC GRACZY W GILDII, sojuszy i wrogow
-#PRYWATNY CZAT GILDII
 #TOPKA RANKINGU
 #INFO GRACZA TO KD I RANKING
 #POTRZEBNE ITEMY DO ZALOZENIA GILDII

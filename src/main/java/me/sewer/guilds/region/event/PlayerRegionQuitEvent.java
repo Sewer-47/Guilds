@@ -12,6 +12,7 @@ public class PlayerRegionQuitEvent extends Event {
     private final Region region;
 
     public PlayerRegionQuitEvent(Player player, Region region) {
+        super(true);
         this.player = player;
         this.region = region;
     }

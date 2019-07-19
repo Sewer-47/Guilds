@@ -1,4 +1,4 @@
-package me.sewer.guilds.command.commands.create;
+package me.sewer.guilds.command.impl.create;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.command.Command;
@@ -6,7 +6,6 @@ import me.sewer.guilds.guild.*;
 import me.sewer.guilds.guild.event.GuildCreateEvent;
 import me.sewer.guilds.region.CuboidRegion;
 import me.sewer.guilds.region.Region;
-import me.sewer.guilds.util.ChatUtil;
 import me.sewer.guilds.validity.Validity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -80,7 +79,7 @@ public class CreateCommand extends Command {
                             .plusMonths(configurationSection.getInt("months"));
                     Validity validity = new Validity(expire);
 
-                    GuildCrystal crystal = new GuildCrystal(render, memebers, terrain, this.plugin);
+                    GuildHeart crystal = new GuildHeart(render, memebers, terrain, this.plugin);
 
                     Guild guild = new Guild(uniqueId, render, memebers, terrain, relations, crystal, validity);
 
@@ -94,7 +93,8 @@ public class CreateCommand extends Command {
                         this.plugin.getRegionManager().byWorldId(world.getUID()).add(region);
                         user.setGuild(guild);
                         user.sendMessage("guildCreate", render.getTag(), render.getName());
-                        ChatUtil.sendAll("guildCreateBc", this.plugin.getUserManager(), sender.getName(), render.getTag(), render.getName());
+                        this.plugin.getUserManager().getOnline().forEach(user1 -> user1.sendMessage("guildCreateBc", sender.getName(), render.getTag(), render.getName()));
+
                     }
                 } else {
                     user.sendMessage("hasGuild");

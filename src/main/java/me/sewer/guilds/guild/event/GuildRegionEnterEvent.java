@@ -12,6 +12,7 @@ public class GuildRegionEnterEvent extends Event {
     private final Player who;
 
     public GuildRegionEnterEvent(Guild guild, Player who) {
+        super(true);
         this.guild = guild;
         this.who = who;
     }

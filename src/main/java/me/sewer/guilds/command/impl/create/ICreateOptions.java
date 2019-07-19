@@ -1,4 +1,4 @@
-package me.sewer.guilds.command.commands.create;
+package me.sewer.guilds.command.impl.create;
 
 import java.util.List;
 

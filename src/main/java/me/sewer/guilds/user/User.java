@@ -1,10 +1,11 @@
 package me.sewer.guilds.user;
 
 import me.sewer.guilds.GuildsPlugin;
+import me.sewer.guilds.elo.Elo;
 import me.sewer.guilds.guild.Guild;
-import me.sewer.guilds.l18n.MessageManager;
-import me.sewer.guilds.util.ChatUtil;
+import me.sewer.guilds.i18n.MessageManager;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.lang.ref.Reference;
@@ -22,7 +23,7 @@ public class User implements UserProfile {
     private final MessageManager messageManager;
     private Guild guild;
     private Locale locale;
-    private int points;
+    private final Elo elo;
 
     public User(Player bukkit, GuildsPlugin plugin) {
         this.name = bukkit.getName();
@@ -39,7 +40,7 @@ public class User implements UserProfile {
         } else {
             this.locale = plugin.getMessageManager().getFallback();
         }
-        this.points = plugin.getConfig().getInt("startPoints");
+        this.elo = new Elo(plugin.getConfig().getInt("startPoints"));
     }
 
     @Override
@@ -76,15 +77,11 @@ public class User implements UserProfile {
         return bukkit;
     }
 
-    public int getPoints() {
-        return points;
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
+    public Elo getElo() {
+        return elo;
     }
 
     public void sendMessage(String message, Object... params) {
-        this.bukkit.get().sendMessage(ChatUtil.color(MessageFormat.format(this.messageManager.getMessage(this.locale, message), params)));
+        this.bukkit.get().sendMessage(ChatColor.translateAlternateColorCodes('&', MessageFormat.format(this.messageManager.getMessage(this.locale, message), params)));
     }
 }

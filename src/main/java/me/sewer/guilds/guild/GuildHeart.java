@@ -13,7 +13,7 @@ import org.bukkit.util.Vector;
 
 import java.lang.ref.Reference;
 
-public class GuildCrystal implements Listener {  //THIS CLASS MUST BE REWRITED
+public class GuildHeart implements Listener {  //THIS CLASS MUST BE REWRITED
 
     private final Vector location;
     private final Reference<World> world;
@@ -22,7 +22,7 @@ public class GuildCrystal implements Listener {  //THIS CLASS MUST BE REWRITED
     private final GuildMemebers memebers;
     private final GuildTerrain terrain;
 
-    public GuildCrystal(GuildRender render, GuildMemebers memebers, GuildTerrain terrain, GuildsPlugin plugin) { ;
+    public GuildHeart(GuildRender render, GuildMemebers memebers, GuildTerrain terrain, GuildsPlugin plugin) { ;
         this.location = terrain.getHome();
         this.world = terrain.getWorld();
         this.plugin = plugin;

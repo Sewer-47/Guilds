@@ -1,4 +1,4 @@
-package me.sewer.guilds.l18n;
+package me.sewer.guilds.i18n;
 
 import java.text.MessageFormat;
 import java.util.HashMap;

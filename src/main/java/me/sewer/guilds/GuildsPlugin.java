@@ -1,28 +1,24 @@
 package me.sewer.guilds;
 
+import me.sewer.guilds.elo.EloAlgorithm;
+import me.sewer.guilds.listener.*;
 import me.sewer.guilds.module.Module;
 import me.sewer.guilds.command.BukkitCommand;
 import me.sewer.guilds.command.Command;
-import me.sewer.guilds.command.commands.create.CreateCommand;
-import me.sewer.guilds.command.commands.InfoCommand;
-import me.sewer.guilds.command.commands.create.CreateOptions;
+import me.sewer.guilds.command.impl.create.CreateCommand;
+import me.sewer.guilds.command.impl.InfoCommand;
+import me.sewer.guilds.command.impl.create.CreateOptions;
 import me.sewer.guilds.guild.GuildFileManager;
 import me.sewer.guilds.guild.GuildListeners;
 import me.sewer.guilds.guild.GuildManager;
-import me.sewer.guilds.l18n.MessageListeners;
-import me.sewer.guilds.l18n.MessageLoader;
-import me.sewer.guilds.l18n.MessageManager;
-import me.sewer.guilds.listener.AsyncPlayerChatListener;
-import me.sewer.guilds.listener.PlayerInteractEntityListener;
-import me.sewer.guilds.listener.GuildRegionListeners;
-import me.sewer.guilds.listener.PlayerJoinListener;
-import me.sewer.guilds.module.modules.*;
+import me.sewer.guilds.i18n.MessageListeners;
+import me.sewer.guilds.i18n.MessageLoader;
+import me.sewer.guilds.i18n.MessageManager;
+import me.sewer.guilds.module.impl.*;
 import me.sewer.guilds.region.RegionListeners;
 import me.sewer.guilds.region.RegionManager;
 import me.sewer.guilds.region.RegionRegistry;
 import me.sewer.guilds.region.RegionTask;
-import me.sewer.guilds.tablist.Tablist;
-import me.sewer.guilds.tablist.TablistTask;
 import me.sewer.guilds.user.User;
 import me.sewer.guilds.user.UserFileManager;
 import me.sewer.guilds.user.UserListeners;
@@ -52,6 +48,8 @@ public class GuildsPlugin extends JavaPlugin {
 
     private Set<Module> modules;
 
+    private EloAlgorithm eloAlgorithm;
+
 
     @Override
     public void onEnable() {
@@ -78,6 +76,8 @@ public class GuildsPlugin extends JavaPlugin {
         messageLoader.unpack(this.getFile().getAbsoluteFile());
         messageLoader.loadAll();
 
+        this.eloAlgorithm = new EloAlgorithm(this.getConfig().getInt("eloMultiplier"));
+
         for (World world : Bukkit.getWorlds()) {
             this.regionManager.addRegionRegistry(world.getUID(), new RegionRegistry(world.getUID()));
         }
@@ -93,14 +93,6 @@ public class GuildsPlugin extends JavaPlugin {
                 messagesMap.put(key, configurationSection.getString(key));
         }
 
-        Map<Integer, String> slots = new HashMap<>();
-        slots.put(1, "hello");
-        slots.put(2, "world");
-        Tablist tablist = new Tablist(slots, "header", "footer");
-
-        TablistTask tablistTask = new TablistTask(tablist, this.userManager);
-
-        scheduler.runTaskTimerAsynchronously(this, tablistTask, 1L, 20L);
         scheduler.runTaskTimerAsynchronously(this, new RegionTask(this), 1L, 5L);
         scheduler.runTaskTimerAsynchronously(this, new GuildValidityTask(this), 1L, 20L * 6);
 
@@ -116,11 +108,15 @@ public class GuildsPlugin extends JavaPlugin {
 
                 new GuildRegionListeners(this),
 
+                new EntityExplodeListener(this),
+
         }) {
             pluginManager.registerEvents(listener, this);
         }
 
         CreateOptions createOptions = new CreateOptions(this.getConfig());
+        String prefix = this.getConfig().getString("privateChatPrefix");
+        String format = this.getConfig().getString("privateChatFormat");
 
         this.modules = new HashSet<>();
 
@@ -131,6 +127,7 @@ public class GuildsPlugin extends JavaPlugin {
                 new WorldModule(createOptions),
                 new SpawnModule(createOptions),
                 new OtherGuildDistanceModule(createOptions),
+                new PrivateChatModule(this.userManager, prefix, format),
         }) {
             module.initialize(this);
             module.setEnabled(true);
@@ -140,17 +137,14 @@ public class GuildsPlugin extends JavaPlugin {
         BukkitCommand command = new BukkitCommand(this);
         final Command createCommand = new CreateCommand(this, createOptions);
         command.getCommands().put(createCommand.getName(), createCommand);
-        createCommand.getAliases().forEach(alias -> command.getCommands().put(alias, createCommand));
 
         final Command infoCommand = new InfoCommand(this);
         command.getCommands().put(infoCommand.getName(), infoCommand);
-        infoCommand.getAliases().forEach(alias -> command.getCommands().put(alias, infoCommand));
         this.getCommand("guild").setExecutor(command);
     }
 
     @Override
     public void onDisable() {
-
 
     }
 
@@ -178,4 +172,7 @@ public class GuildsPlugin extends JavaPlugin {
         return this.guildFileManager;
     }
 
+    public EloAlgorithm getEloAlgorithm() {
+        return eloAlgorithm;
+    }
 }

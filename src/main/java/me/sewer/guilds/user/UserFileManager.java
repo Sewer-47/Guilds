@@ -17,6 +17,6 @@ public class UserFileManager extends BaseFileManager {
     }
 
     public File getUserFile(UUID uniqueId) {
-        return new File(this.getDirectory(), uniqueId.toString() + ".yml");
+        return new File(this.getDirectory(), uniqueId.toString() + ".json");
     }   
 }

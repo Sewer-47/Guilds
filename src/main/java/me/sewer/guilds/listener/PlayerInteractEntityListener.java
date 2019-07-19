@@ -3,7 +3,7 @@ package me.sewer.guilds.listener;
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.guild.GuildRender;
-import me.sewer.guilds.l18n.MessageManager;
+import me.sewer.guilds.i18n.MessageManager;
 import me.sewer.guilds.user.UserManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,7 +42,7 @@ public class PlayerInteractEntityListener implements Listener {
                         tag = this.messageManager.getMessage(locale, "guildTag", lack);
                         name = this.messageManager.getMessage(locale, "guildName", lack);
                     }
-                    user.sendMessage("playerInfo", target.getDisplayName(), targetUser.getPoints(), tag, name);
+                    user.sendMessage("playerInfo", target.getDisplayName(), targetUser.getElo().getPoints(), tag, name);
                 });
             });
         }

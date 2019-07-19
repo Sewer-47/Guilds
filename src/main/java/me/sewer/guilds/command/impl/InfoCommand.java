@@ -1,10 +1,10 @@
-package me.sewer.guilds.command.commands;
+package me.sewer.guilds.command.impl;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.command.Command;
 import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.guild.GuildRender;
-import me.sewer.guilds.l18n.MessageManager;
+import me.sewer.guilds.i18n.MessageManager;
 import me.sewer.guilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -31,8 +31,8 @@ public class InfoCommand extends Command {
         this.userManager.getUser(player).ifPresent(user -> {
             Locale locale = user.getLocale();
             if (args.length == 2) {
-                if (Bukkit.getPlayer(args[1]) != null) {
-                    Player target = Bukkit.getPlayer(args[1]);
+                Player target = Bukkit.getPlayer(args[1]);
+                if (target != null) {
                     this.userManager.getUser(target).ifPresent(targetUser -> {
                         String tag;
                         String name;
@@ -46,7 +46,7 @@ public class InfoCommand extends Command {
                             tag = this.messageManager.getMessage(locale, "guildTag", lack);
                             name = this.messageManager.getMessage(locale, "guildName", lack);
                         }
-                        user.sendMessage("playerInfo", target.getDisplayName(), targetUser.getPoints(), tag, name);
+                        user.sendMessage("playerInfo", target.getDisplayName(), targetUser.getElo().getPoints(), tag, name);
                     });
                 } else {
                     user.sendMessage("unkownPlayer");

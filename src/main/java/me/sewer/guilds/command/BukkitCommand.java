@@ -2,7 +2,7 @@ package me.sewer.guilds.command;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.user.User;
-import me.sewer.guilds.util.ChatUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,22 +25,20 @@ public class BukkitCommand implements CommandExecutor {
         if (sender instanceof Player) {
             User user = this.plugin.getUserManager().getUser(sender).get();
             if (args.length >= 1) {
-                Command command = this.commands.get(args[0]);
-
-
-                if (command != null) {
-                    return command.onCommand(sender, args);
-                } else {
-                    user.sendMessage("noCommand");
-                    return true;
+                for (Command command : commands.values()) {
+                    if (command.getName().equals(args[0].toLowerCase()) || command.getAliases().contains(args[0].toLowerCase())) {
+                        return command.onCommand(sender, args);
+                    }
                 }
+                user.sendMessage("noCommand");
+                return true;
             } else {
                 for (Command command : commands.values()) {
                     sender.sendMessage(command.getName() + " - " + command.getDescription());
                 }
             }
         } else {
-            ChatUtil.sendConsole(Level.INFO, "Only players can use this modules");
+            Bukkit.getLogger().log(Level.INFO, "Only players can use this command");
         }
         return true;
     }
@@ -48,4 +46,5 @@ public class BukkitCommand implements CommandExecutor {
     public Map<String, Command> getCommands() {
         return commands;
     }
+
 }

@@ -1,4 +1,4 @@
-package me.sewer.guilds.l18n;
+package me.sewer.guilds.i18n;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.user.UserManager;

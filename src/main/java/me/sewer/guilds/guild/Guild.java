@@ -12,16 +12,16 @@ public class Guild implements Unique {
     private final GuildMemebers memebers;
     private final GuildTerrain terrain;
     private final GuildRelations relations;
-    private final GuildCrystal crystal;
+    private final GuildHeart heart;
     private final Validity validity;
 
-    public Guild(UUID uniqueId, GuildRender render, GuildMemebers memebers, GuildTerrain terrain, GuildRelations relations, GuildCrystal crystal, Validity validity) {
+    public Guild(UUID uniqueId, GuildRender render, GuildMemebers memebers, GuildTerrain terrain, GuildRelations relations, GuildHeart heart, Validity validity) {
         this.uniqueId = uniqueId;
         this.render = render;
         this.memebers = memebers;
         this.terrain = terrain;
         this.relations = relations;
-        this.crystal = crystal;
+        this.heart = heart;
         this.validity = validity;
     }
 
@@ -46,8 +46,8 @@ public class Guild implements Unique {
         return this.relations;
     }
 
-    public GuildCrystal getCrystal() {
-        return crystal;
+    public GuildHeart getHeart() {
+        return heart;
     }
 
     public Validity getValidity() {

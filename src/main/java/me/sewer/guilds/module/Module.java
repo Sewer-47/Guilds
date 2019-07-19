@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 
 import java.util.logging.Level;
 
-public class Module implements Listener {
+public abstract class Module implements Listener {
 
     private String name;
     private boolean enabled;
