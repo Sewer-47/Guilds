@@ -1,4 +1,4 @@
-package me.sewer.guilds.listener;
+package me.sewer.guilds.guild;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.guild.GuildManager;
@@ -61,7 +61,7 @@ public class GuildRegionListeners implements Listener {
         Player player = event.getPlayer();
         this.userManager.getUser(player).ifPresent(user -> {
             this.guildManager.getGuild(event.getBlock().getLocation()).forEach(guild -> {
-                if (!guild.getMemebers().getMembers().contains(user)) {
+                if (!guild.getMemebers().getAll().contains(user)) {
                     event.setCancelled(true);
                     user.sendMessage("cantBlockBreak");
                     return;
@@ -75,7 +75,7 @@ public class GuildRegionListeners implements Listener {
         Player player = event.getPlayer();
         this.userManager.getUser(player).ifPresent(user -> {
             this.guildManager.getGuild(event.getBlock().getLocation()).forEach(guild -> {
-                if (!guild.getMemebers().getMembers().contains(user)) {
+                if (!guild.getMemebers().getAll().contains(user)) {
                     event.setCancelled(true);
                     user.sendMessage("cantBlockPlace");
                     return;
@@ -90,7 +90,7 @@ public class GuildRegionListeners implements Listener {
         if (event.getPlayer() != null) {
             this.userManager.getUser(player).ifPresent(user -> {
                 this.guildManager.getGuild(event.getBlock().getLocation()).forEach(guild -> {
-                    if (!guild.getMemebers().getMembers().contains(user)) {
+                    if (!guild.getMemebers().getAll().contains(user)) {
                         event.setCancelled(true);
                         user.sendMessage("cantBlockIgnite");
                         return;
@@ -108,7 +108,7 @@ public class GuildRegionListeners implements Listener {
             if (this.blockedMaterials.contains(block.getType())) {
                 this.userManager.getUser(player).ifPresent(user -> {
                     this.guildManager.getGuild(block.getLocation()).forEach(guild -> {
-                        if (!guild.getMemebers().getMembers().contains(user)) {
+                        if (!guild.getMemebers().getAll().contains(user)) {
                             user.sendMessage("cantBlockUse");
                             event.setCancelled(true);
                         }
@@ -123,7 +123,7 @@ public class GuildRegionListeners implements Listener {
         Player player = event.getPlayer();
         this.userManager.getUser(player).ifPresent(user -> {
             this.guildManager.getGuild(event.getBlockClicked().getLocation()).forEach(guild -> {
-                if (!guild.getMemebers().getMembers().contains(user)) {
+                if (!guild.getMemebers().getAll().contains(user)) {
                     event.setCancelled(true);
                     user.sendMessage("cantUseBucket");
                     return;
@@ -137,7 +137,7 @@ public class GuildRegionListeners implements Listener {
         Player player = event.getPlayer();
         this.userManager.getUser(player).ifPresent(user -> {
             this.guildManager.getGuild(event.getBlockClicked().getLocation()).forEach(guild -> {
-                if (!guild.getMemebers().getMembers().contains(user)) {
+                if (!guild.getMemebers().getAll().contains(user)) {
                     event.setCancelled(true);
                     user.sendMessage("cantUseBucket");
                     return;
@@ -153,7 +153,7 @@ public class GuildRegionListeners implements Listener {
             Player player = event.getPlayer();
             this.userManager.getUser(player).ifPresent(user -> {
                 this.guildManager.getGuild(player.getLocation()).forEach(guild -> {
-                    if (!guild.getMemebers().getMembers().contains(user)) {
+                    if (!guild.getMemebers().getAll().contains(user)) {
                         event.setCancelled(true);
                         user.sendMessage("cantUseCommand");
                         return;

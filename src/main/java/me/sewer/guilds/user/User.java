@@ -4,6 +4,7 @@ import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.elo.Elo;
 import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.i18n.MessageManager;
+import me.sewer.guilds.request.Request;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,6 +12,8 @@ import org.bukkit.entity.Player;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.text.MessageFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,6 +27,7 @@ public class User implements UserProfile {
     private Guild guild;
     private Locale locale;
     private final Elo elo;
+    private Optional<Request> lastRequest;
 
     public User(Player bukkit, GuildsPlugin plugin) {
         this.name = bukkit.getName();
@@ -41,6 +45,62 @@ public class User implements UserProfile {
             this.locale = plugin.getMessageManager().getFallback();
         }
         this.elo = new Elo(plugin.getConfig().getInt("startPoints"));
+    }
+
+    public boolean acceptLastRequest() {
+        if (this.lastRequest == null) {
+            return false;
+        }
+
+        Request request = this.lastRequest.get();
+        if (request == null) {
+            return false;
+        }
+
+        request.accept();
+        this.lastRequest = null;
+        return true;
+    }
+
+    public boolean declineLastRequest() {
+        if (this.lastRequest == null) {
+            return false;
+        }
+
+        Request request = this.lastRequest.get();
+        if (request == null) {
+            return false;
+        }
+
+        request.deny();
+        this.lastRequest = null;
+        return true;
+    }
+
+    public Request getLastRequest() {
+        return this.lastRequest != null ? this.lastRequest.get() : null;
+    }
+
+    public void request(Request request) {
+        this.lastRequest = Optional.of(new LastRequest(request, Instant.now().plus(5, ChronoUnit.MINUTES)).get());
+    }
+
+    public void request(Request request, Instant timeout) {
+        this.lastRequest = Optional.of(new LastRequest(request, timeout).get());
+    }
+
+    private class LastRequest {
+        final Request request;
+        final Instant timeout;
+
+        LastRequest(Request request, Instant timeout) {
+            this.request = request;
+            this.timeout = timeout;
+        }
+
+        Request get() {
+            return Instant.now().isBefore(this.timeout) ? this.request : null;
+        }
     }
 
     @Override
@@ -73,8 +133,8 @@ public class User implements UserProfile {
         this.locale = locale;
     }
 
-    public Reference<Player> getBukkit() {
-        return bukkit;
+    public Optional<Player> getBukkit() {
+        return Optional.ofNullable(this.bukkit.get());
     }
 
     public Elo getElo() {

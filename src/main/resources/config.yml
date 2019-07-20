@@ -1,36 +1,15 @@
+# BASIC
 defaultLang: pl_PL
-startPoints: 500
-
 guildCreatingEnabled: true
 
-guildValidity:
-  minutes: 0
-  hours: 0
-  days: 0
-  months: 1
+# RANK
+startPoints: 500
+eloMultiplier: 30
+minMembersInGuildToSeeRank: 2 #TODO
 
-noForeignInteractions:
-  - chest
-  - ender_chest
-  - lever
-
-chatVariables:
-    rank: "{@RANK}"
-
-    guildTag: "{@TAG}"
-    guildName: "{@NAME}"
-    guildRank: "{@GRANK}" #TODO
-    guildLives: "{@GLIVES}" #TODO
-
-blocksCanBeDestroyedByTnt: #you can add your own blocks, and the chance of an explosion
-  obsidian: 50
-  enchanting_table: 10
-  #water: 90
-  #lava: 90
-
+# GUILD CREATION SETTINGS
 minDistanceToSpawn: 250
 minDistanceBetweenGuilds: 50
-
 allowedWorlds:
   - world
 
@@ -39,28 +18,50 @@ guildRender:
   tagMaxLength: 5
   nameMinLength: 2
   nameMaxLength: 10
-
   tagBlackList: #TODO
     - "fuck"
     - "bpl" #XD
-
-  nameWordsBlackList: #TODO guild name cannot cointains this words
+    -
+  nameWordsBlackList: #TODO
     - "fuck"
     - "kurwa"
 
-eloMultiplier: 30
+guildValidity:
+  minutes: 0
+  hours: 0
+  days: 0
+  months: 1
 
-privateChatPrefix: "!"
-privateChatFormat: "&6[&c!&6]&7{0}:&f {1}"
+# GUILD REGION
+regionsEnabled: true #TODO
+regionSize: 25
+tntExplosionInGuildCooldown: 120s #TODO
+noForeignInteractions:
+  - chest
+  - ender_chest
+  - lever
 
 blackListCommandsInGuildRegion:
   - "sethome"
 
-#TODO
-regionsEnabled: true
-tntExplosionInGuildCooldown: 120s
+# CHAT
+chatVariables:
+    rank: "{@RANK}"
 
-minMembersInGuildToSeeRank: 2
+    guildTag: "{@TAG}"
+    guildName: "{@NAME}"
+    guildRank: "{@GRANK}" #TODO
+    guildLives: "{@GLIVES}" #TODO
+
+privateChatPrefix: "!"
+privateChatFormat: "&6[&c!&6]&7{0}:&f {1}"
+
+# OTHER
+blocksCanBeDestroyedByTnt: #you can add your own blocks, and the chance of an explosion
+  obsidian: 50
+  enchanting table: 10
+  water: 90
+  lava: 90
 
 #TODO
 #ENDERCRYSTALE MAJA BYC ZROBIONE PAKIETAMI
@@ -71,3 +72,6 @@ minMembersInGuildToSeeRank: 2
 #TOPKA RANKINGU
 #INFO GRACZA TO KD I RANKING
 #POTRZEBNE ITEMY DO ZALOZENIA GILDII
+#usuwac request do gildii, gdy ona sie usunie
+#zablokowac pvp miedzy czlonkami gildii
+#poprawic EntityExplodeListener

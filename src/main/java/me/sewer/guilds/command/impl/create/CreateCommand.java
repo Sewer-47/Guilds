@@ -21,7 +21,7 @@ import java.util.UUID;
 public class CreateCommand extends Command {
 
     public static final String NAME = "create";
-    public static final String DESCRIPTION = "zakladanie gildii";
+    public static final String DESCRIPTION = "guild creating";
     private final GuildsPlugin plugin;
     private final GuildManager guildManager;
     private final CreateOptions options;
@@ -56,15 +56,17 @@ public class CreateCommand extends Command {
                     GuildMemebers memebers = new GuildMemebers(user);
                     World world = location.getWorld();
 
+                    int regionSize = this.options.regionSize();
+
                     Vector vectorMin = location.toVector();
-                    vectorMin.setX(vectorMin.getX() - 25);
+                    vectorMin.setX(vectorMin.getX() - regionSize);
                     vectorMin.setY(0);
-                    vectorMin.setZ(vectorMin.getZ() - 25);
+                    vectorMin.setZ(vectorMin.getZ() - regionSize);
 
                     Vector vectorMax = location.toVector();
-                    vectorMax.setX(vectorMax.getX() + 25);
+                    vectorMax.setX(vectorMax.getX() + regionSize);
                     vectorMax.setY(world.getMaxHeight());
-                    vectorMax.setZ(vectorMax.getZ() + 25);
+                    vectorMax.setZ(vectorMax.getZ() + regionSize);
 
                     Region region = new CuboidRegion(vectorMax, vectorMin, render.getTag());
                     GuildTerrain terrain = new GuildTerrain(region, location);

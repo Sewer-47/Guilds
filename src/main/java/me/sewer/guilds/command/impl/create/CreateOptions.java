@@ -10,6 +10,7 @@ public class CreateOptions implements ICreateOptions {
     private final int guildDistance;
     private final List<String> allowedWorlds;
     private final boolean creatingEnabled;
+    private final int regionSize;
     private final int tagMinLength;
     private final int tagMaxLength;
     private final int nameMinLength;
@@ -21,6 +22,7 @@ public class CreateOptions implements ICreateOptions {
         this.guildDistance = configuration.getInt("minDistanceBetweenGuilds");
         this.allowedWorlds = configuration.getStringList("allowedWorlds");
         this.creatingEnabled = configuration.getBoolean("guildCreatingEnabled");
+        this.regionSize = configuration.getInt("regionSize");
         this.tagMinLength = render.getInt("tagMinLength");
         this.tagMaxLength = render.getInt("tagMaxLength");
         this.nameMinLength = render.getInt("nameMinLength");
@@ -46,6 +48,11 @@ public class CreateOptions implements ICreateOptions {
     @Override
     public boolean creatingEnabled() {
         return this.creatingEnabled;
+    }
+
+    @Override
+    public int regionSize() {
+        return this.regionSize;
     }
 
     @Override

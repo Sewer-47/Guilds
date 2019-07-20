@@ -32,7 +32,7 @@ public class PrivateChatModule extends Module {
         if (event.getMessage().startsWith(this.prefix) && user.isPresent() && user.get().getGuild().isPresent()) {
             Guild guild = user.get().getGuild().get();
             event.getRecipients().clear();
-            guild.getMemebers().getMembers().forEach(member -> {
+            guild.getMemebers().getAll().forEach(member -> {
                 Player player = member.getBukkit().get();
                 if (player != null) {
                     event.getRecipients().add(player);

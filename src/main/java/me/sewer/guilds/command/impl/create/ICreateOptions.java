@@ -20,4 +20,6 @@ public interface ICreateOptions {
 
     int nameMaxLength();
 
+    int regionSize();
+
 }

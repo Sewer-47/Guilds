@@ -15,7 +15,7 @@ public class GuildMemebers {
         this.members.add(owner);
     }
 
-    public Set<User> getMembers() {
+    public Set<User> getAll() {
         return members;
     }
 

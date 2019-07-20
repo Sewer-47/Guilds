@@ -15,7 +15,7 @@ import java.util.Locale;
 public class InfoCommand extends Command {
 
     public static final String NAME = "info";
-    public static final String DESCRIPTION = "informacje o graczu";
+    public static final String DESCRIPTION = "informations about player";
     private final UserManager userManager;
     private final MessageManager messageManager;
 

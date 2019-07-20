@@ -43,8 +43,16 @@ public class BukkitCommand implements CommandExecutor {
         return true;
     }
 
+    public void registerCommand(Command command) {
+        this.commands.put(command.getName(), command);
+    }
+
+    public void unregisterCommand(Command command) {
+        this.commands.remove(command.getName());
+    }
+
     public Map<String, Command> getCommands() {
-        return commands;
+        return this.commands;
     }
 
 }

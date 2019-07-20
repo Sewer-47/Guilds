@@ -1,12 +1,13 @@
 package me.sewer.guilds;
 
+import me.sewer.guilds.command.impl.*;
 import me.sewer.guilds.elo.EloAlgorithm;
+import me.sewer.guilds.guild.GuildRegionListeners;
 import me.sewer.guilds.listener.*;
 import me.sewer.guilds.module.Module;
 import me.sewer.guilds.command.BukkitCommand;
 import me.sewer.guilds.command.Command;
 import me.sewer.guilds.command.impl.create.CreateCommand;
-import me.sewer.guilds.command.impl.InfoCommand;
 import me.sewer.guilds.command.impl.create.CreateOptions;
 import me.sewer.guilds.guild.GuildFileManager;
 import me.sewer.guilds.guild.GuildListeners;
@@ -53,11 +54,11 @@ public class GuildsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.saveDefaultConfig();
+
         MessageLoader messageLoader = new MessageLoader(this);
         PluginManager pluginManager = this.getServer().getPluginManager();
         BukkitScheduler scheduler = this.getServer().getScheduler();
-
-        this.saveDefaultConfig();
 
         this.userManager = new UserManager();
         this.guildManager = new GuildManager();
@@ -68,7 +69,6 @@ public class GuildsPlugin extends JavaPlugin {
         String country = StringUtils.substring(defaultLocale, 3, 5);
         Locale locale = new Locale(language, country);
         this.messageManager = new MessageManager(locale);
-
 
         this.userFileManager = new UserFileManager(this);
         this.guildFileManager = new GuildFileManager(this);
@@ -102,7 +102,6 @@ public class GuildsPlugin extends JavaPlugin {
                 new GuildListeners(this),
                 new MessageListeners(this),
 
-                new PlayerJoinListener(this),
                 new AsyncPlayerChatListener(this, messagesMap),
                 new PlayerInteractEntityListener(this),
 
@@ -134,13 +133,18 @@ public class GuildsPlugin extends JavaPlugin {
             this.modules.add(module);
         }
 
-        BukkitCommand command = new BukkitCommand(this);
-        final Command createCommand = new CreateCommand(this, createOptions);
-        command.getCommands().put(createCommand.getName(), createCommand);
-
-        final Command infoCommand = new InfoCommand(this);
-        command.getCommands().put(infoCommand.getName(), infoCommand);
-        this.getCommand("guild").setExecutor(command);
+        BukkitCommand bukkitCommand = new BukkitCommand(this);
+        for (Command command : new Command[] {
+                new CreateCommand(this, createOptions),
+                new InfoCommand(this),
+                new AddComand(this.userManager, this.guildManager),
+                new JoinCommand(this),
+                new LeaveCommand(this.userManager),
+                new KickCommand(this.userManager),
+        }) {
+            bukkitCommand.registerCommand(command);
+        }
+        this.getCommand("guild").setExecutor(bukkitCommand);
     }
 
     @Override

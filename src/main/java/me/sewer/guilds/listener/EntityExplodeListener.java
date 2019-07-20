@@ -1,6 +1,7 @@
 package me.sewer.guilds.listener;
 
 import me.sewer.guilds.GuildsPlugin;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,7 +17,7 @@ import java.util.logging.Level;
 
 public class EntityExplodeListener implements Listener {
 
-    private final Map<Material, Integer> materialIntegerMap; //idk to name it
+    private final Map<Material, Integer> materialIntegerMap; //idk how name it
     private final Random random;
     private final GuildsPlugin plugin;
 

@@ -31,7 +31,7 @@ public class GuildValidityTask implements Runnable {
                 String worldName = (world == null) ? "" : world.getName();
                 this.plugin.getUserManager().getOnline().forEach(user -> user.sendMessage("guildExpire", guild.getRender().getTag(), vector.getBlockX(), vector.getBlockY(), vector.getBlockZ(), worldName));
                 this.plugin.getGuildManager().unregisterGuild(guild);
-                guild.getMemebers().getMembers().forEach(user -> user.setGuild(null));
+                guild.getMemebers().getAll().forEach(user -> user.setGuild(null));
             }
         });
     }
