@@ -22,7 +22,7 @@ public class OtherGuildDistanceModule extends Module {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true )
     public void onCreate(GuildCreateEvent event) {
-        User user = event.getGuild().getMemebers().getOwner();
+        User user = event.getWho();
         Player player = user.getBukkit().get();
         Location location = player.getLocation();
         this.getPlugin().getGuildManager().getAll().forEach(guild -> {

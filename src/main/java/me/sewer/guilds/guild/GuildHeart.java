@@ -1,6 +1,7 @@
 package me.sewer.guilds.guild;
 
 import me.sewer.guilds.GuildsPlugin;
+import me.sewer.guilds.guild.member.GuildMembers;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -19,10 +20,10 @@ public class GuildHeart implements Listener {  //THIS CLASS MUST BE REWRITED
     private final Reference<World> world;
     private final GuildsPlugin plugin;
     private final GuildRender render;
-    private final GuildMemebers memebers;
+    private final GuildMembers memebers;
     private final GuildTerrain terrain;
 
-    public GuildHeart(GuildRender render, GuildMemebers memebers, GuildTerrain terrain, GuildsPlugin plugin) { ;
+    public GuildHeart(GuildRender render, GuildMembers memebers, GuildTerrain terrain, GuildsPlugin plugin) { ;
         this.location = terrain.getHome();
         this.world = terrain.getWorld();
         this.plugin = plugin;
@@ -55,7 +56,7 @@ public class GuildHeart implements Listener {  //THIS CLASS MUST BE REWRITED
         if (entity != null && entity.getType() == EntityType.ENDER_CRYSTAL) {
             if (entity.getLocation().toVector().distance(this.terrain.getHome()) <= 1) {
                 this.plugin.getUserManager().getUser(event.getPlayer()).ifPresent(user -> {
-                    user.sendMessage("guildInfo", this.render.getTag(), this.render.getName(), "members", this.memebers.getOwner().getName());
+                 //   user.sendMessage("guildInfo", this.render.getTag(), this.render.getName(), "members", this.memebers.getOwner().getName());
                     return;
                 });
             }

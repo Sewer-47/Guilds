@@ -11,24 +11,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-@ModuleInfo(name = "SpawnModule")
-public class SpawnModule extends Module {
+@ModuleInfo(name = "SpawnDistanceModule")
+public class SpawnDistanceModule extends Module {
 
     private final CreateOptions options;
 
-    public SpawnModule(CreateOptions options) {
+    public SpawnDistanceModule(CreateOptions options) {
         this.options = options;
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true )
     public void onCreate(GuildCreateEvent event) {
-        Guild guild = event.getGuild();
-        User user = guild.getMemebers().getOwner();
-        Player player = user.getBukkit().get();
-        Location location = player.getLocation();
-        if (location.distance(location.getWorld().getSpawnLocation()) <= this.options.spawnDistance()) {
-            user.sendMessage("tooNearSpawn");
-            event.setCancelled(true);
-        }
+        User user = event.getWho();
+        user.getBukkit().ifPresent(player -> {
+            Location location = player.getLocation();
+            if (location.distance(location.getWorld().getSpawnLocation()) <= this.options.spawnDistance()) {
+                user.sendMessage("tooNearSpawn");
+                event.setCancelled(true);
+            }
+        });
     }
 }

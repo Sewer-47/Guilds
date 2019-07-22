@@ -22,4 +22,8 @@ public interface ICreateOptions {
 
     int regionSize();
 
+    String guildSafeName();
+
+    int guildSafeSize();
+
 }

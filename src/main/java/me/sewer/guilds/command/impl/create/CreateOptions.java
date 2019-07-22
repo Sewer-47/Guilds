@@ -1,5 +1,6 @@
 package me.sewer.guilds.command.impl.create;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public class CreateOptions implements ICreateOptions {
     private final int tagMaxLength;
     private final int nameMinLength;
     private final int nameMaxLength;
+    private final String guildSafeName;
+    private final int guildSafeSize;
 
     public CreateOptions(ConfigurationSection configuration) {
         ConfigurationSection render = configuration.getConfigurationSection("guildRender");
@@ -27,6 +30,8 @@ public class CreateOptions implements ICreateOptions {
         this.tagMaxLength = render.getInt("tagMaxLength");
         this.nameMinLength = render.getInt("nameMinLength");
         this.nameMaxLength = render.getInt("nameMaxLength");
+        this.guildSafeName = ChatColor.translateAlternateColorCodes('&', configuration.getString("guildSafeName"));
+        this.guildSafeSize = configuration.getInt("guildSafeSize");
     }
 
 
@@ -53,6 +58,16 @@ public class CreateOptions implements ICreateOptions {
     @Override
     public int regionSize() {
         return this.regionSize;
+    }
+
+    @Override
+    public String guildSafeName() {
+        return this.guildSafeName;
+    }
+
+    @Override
+    public int guildSafeSize() {
+        return this.guildSafeSize;
     }
 
     @Override

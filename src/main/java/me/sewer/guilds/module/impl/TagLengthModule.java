@@ -23,7 +23,7 @@ public class TagLengthModule extends Module {
     public void onCreate(GuildCreateEvent event) {
         Guild guild = event.getGuild();
         GuildRender render = guild.getRender();
-        User user = guild.getMemebers().getOwner();
+        User user = event.getWho();
         String tag = render.getTag();
         if (tag.length() < this.options.tagMinLength() || tag.length() > this.options.tagMaxLength()) {
             user.sendMessage("correctTagLength", this.options.tagMinLength(), this.options.tagMaxLength());

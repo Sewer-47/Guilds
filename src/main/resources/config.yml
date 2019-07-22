@@ -1,6 +1,8 @@
 # BASIC
 defaultLang: pl_PL
 guildCreatingEnabled: true
+canAttackGuildMembers: false
+tpCooldown: 5 #seconds
 
 # RANK
 startPoints: 500
@@ -57,21 +59,59 @@ privateChatPrefix: "!"
 privateChatFormat: "&6[&c!&6]&7{0}:&f {1}"
 
 # OTHER
+guildSafeName: "&6{0} - {1}"
+guildSafeSize: 27
+
 blocksCanBeDestroyedByTnt: #you can add your own blocks, and the chance of an explosion
   obsidian: 50
   enchanting table: 10
   water: 90
   lava: 90
 
-#TODO
-#ENDERCRYSTALE MAJA BYC ZROBIONE PAKIETAMI
+#TODO ogolnie musze zrobic
 #DUMMY Z RANKIEM
-#PODBIJANIE GILDII
-#kOMENDY ADMINA
-#MAKSYMALNA ILOSC GRACZY W GILDII, sojuszy i wrogow
 #TOPKA RANKINGU
 #INFO GRACZA TO KD I RANKING
 #POTRZEBNE ITEMY DO ZALOZENIA GILDII
 #usuwac request do gildii, gdy ona sie usunie
-#zablokowac pvp miedzy czlonkami gildii
 #poprawic EntityExplodeListener
+#cooldwown w zakladaniu gildii i zmienianiu nazwy i tagu gildii
+#gildie mozna podbijac dopiero po jakims czasie
+#Sprawdzic czy requesty dzialaja bo ta optional i usualem wszystkie nulle w user
+#zablokowac tworzenie gildii na granicy mapy
+#MAKSYMALNA ILOSC GRACZY W GILDII, sojuszy i wrogow #TODO
+#naprawic blad ze jak raz sie kliknie na gracza to dostaje sie info dwa razy
+
+#TODO przemyslec czy zrobic
+#Dodanie zmiennej od liczenia ilości wylogowań się gracza podczas walki i ilości asyst
+#pomyslec nad api skript
+#lista gildii w gui
+#kolory graczy gildii i prefixy
+
+#Relase 1.0 #TODO to musze zrobic zanim bedzie relase 1.0 pluginu
+#PODBIJANIE GILDII
+#ENDERCRYSTALE MAJA BYC ZROBIONE PAKIETAMI
+#menu ustawien gildii
+#efekty w gui
+#permisja do stawiania i usuwania niektorych blokow
+#bloki chronione przed wybuchem tnt
+#trzeba sprawdzac swiat przy usuwaniu regionow gildii
+# - KOMENDY ADMINA #TODO
+
+#Nastepny update musi miec spory code cleanup
+
+
+#Code cleanup
+#naming corrected
+#Fixed a few bugs
+#Added:
+# - Blocked pvp between members of the guild (configurable)
+# - Sethome command
+# - Home command #fix cooldown
+# - Guild safe
+# - Guild perms system #work in progress
+# - PlaceHolderAPI hook
+#new Placeholders:
+# - %guilds_tag%
+# - %guilds_name%
+# - %guilds_rank%

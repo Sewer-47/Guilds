@@ -27,7 +27,7 @@ public class User implements UserProfile {
     private Guild guild;
     private Locale locale;
     private final Elo elo;
-    private Optional<Request> lastRequest;
+    private Optional<Request> lastRequest = Optional.empty();
 
     public User(Player bukkit, GuildsPlugin plugin) {
         this.name = bukkit.getName();
@@ -48,37 +48,31 @@ public class User implements UserProfile {
     }
 
     public boolean acceptLastRequest() {
-        if (this.lastRequest == null) {
+        if (!this.lastRequest.isPresent()) {
             return false;
         }
 
         Request request = this.lastRequest.get();
-        if (request == null) {
-            return false;
-        }
-
         request.accept();
-        this.lastRequest = null;
+
+        this.lastRequest = Optional.empty();
         return true;
     }
 
     public boolean declineLastRequest() {
-        if (this.lastRequest == null) {
+        if (!this.lastRequest.isPresent()) {
             return false;
         }
 
         Request request = this.lastRequest.get();
-        if (request == null) {
-            return false;
-        }
-
         request.deny();
-        this.lastRequest = null;
+
+        this.lastRequest = Optional.empty();
         return true;
     }
 
     public Request getLastRequest() {
-        return this.lastRequest != null ? this.lastRequest.get() : null;
+        return !this.lastRequest.isPresent() ? this.lastRequest.get() : null;
     }
 
     public void request(Request request) {

@@ -22,7 +22,7 @@ public class WorldModule extends Module {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true )
     public void onCreate(GuildCreateEvent event) {
         Guild guild = event.getGuild();
-        User user = guild.getMemebers().getOwner();
+        User user = event.getWho();
         Player player = user.getBukkit().get();
         if (!this.options.allowedWorlds().contains(player.getLocation().getWorld().getName())) {
             user.sendMessage("worldCreationBlocked");

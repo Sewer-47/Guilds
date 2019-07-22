@@ -1,13 +1,17 @@
 package me.sewer.guilds.guild;
 
 import me.sewer.guilds.GuildsPlugin;
-import me.sewer.guilds.guild.GuildManager;
 import me.sewer.guilds.guild.event.GuildRegionEnterEvent;
 import me.sewer.guilds.guild.event.GuildRegionQuitEvent;
+import me.sewer.guilds.region.Region;
+import me.sewer.guilds.region.event.PlayerRegionEnterEvent;
+import me.sewer.guilds.region.event.PlayerRegionQuitEvent;
 import me.sewer.guilds.user.UserManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -45,6 +49,30 @@ public class GuildRegionListeners implements Listener {
     }
 
     @EventHandler
+    public void onRegionEnter(PlayerRegionEnterEvent event) {
+        Region region = event.getRegion();
+        if (!this.guildManager.getGuild(region).isPresent()) {
+            return;
+        }
+        if (this.guildManager.getGuild(region).isPresent()) {
+            Event guildRegionEnterEvent = new GuildRegionEnterEvent(this.guildManager.getGuild(region).get(), event.getPlayer());
+            Bukkit.getPluginManager().callEvent(guildRegionEnterEvent);
+        }
+    }
+
+    @EventHandler
+    public void onRegionQuit(PlayerRegionQuitEvent event) {
+        Region region = event.getRegion();
+        if (!this.guildManager.getGuild(region).isPresent()) {
+            return;
+        }
+        if (this.guildManager.getGuild(event.getRegion()).isPresent()) {
+            Event guildRegionQuitEvent = new GuildRegionQuitEvent(this.guildManager.getGuild(region).get(), event.getPlayer());
+            Bukkit.getPluginManager().callEvent(guildRegionQuitEvent);
+        }
+    }
+
+    @EventHandler
     public void onGuildRegionEnter(GuildRegionEnterEvent event) {
         Player player = event.getWho();
         this.userManager.getUser(player).ifPresent(user -> user.sendMessage("guildRegionEnter", event.getGuild().getRender().getTag()));
@@ -61,7 +89,7 @@ public class GuildRegionListeners implements Listener {
         Player player = event.getPlayer();
         this.userManager.getUser(player).ifPresent(user -> {
             this.guildManager.getGuild(event.getBlock().getLocation()).forEach(guild -> {
-                if (!guild.getMemebers().getAll().contains(user)) {
+                if (!guild.getMembers().contains(user)) {
                     event.setCancelled(true);
                     user.sendMessage("cantBlockBreak");
                     return;
@@ -75,7 +103,7 @@ public class GuildRegionListeners implements Listener {
         Player player = event.getPlayer();
         this.userManager.getUser(player).ifPresent(user -> {
             this.guildManager.getGuild(event.getBlock().getLocation()).forEach(guild -> {
-                if (!guild.getMemebers().getAll().contains(user)) {
+                if (!guild.getMembers().contains(user)) {
                     event.setCancelled(true);
                     user.sendMessage("cantBlockPlace");
                     return;
@@ -90,7 +118,7 @@ public class GuildRegionListeners implements Listener {
         if (event.getPlayer() != null) {
             this.userManager.getUser(player).ifPresent(user -> {
                 this.guildManager.getGuild(event.getBlock().getLocation()).forEach(guild -> {
-                    if (!guild.getMemebers().getAll().contains(user)) {
+                    if (!guild.getMembers().contains(user)) {
                         event.setCancelled(true);
                         user.sendMessage("cantBlockIgnite");
                         return;
@@ -108,7 +136,7 @@ public class GuildRegionListeners implements Listener {
             if (this.blockedMaterials.contains(block.getType())) {
                 this.userManager.getUser(player).ifPresent(user -> {
                     this.guildManager.getGuild(block.getLocation()).forEach(guild -> {
-                        if (!guild.getMemebers().getAll().contains(user)) {
+                        if (!guild.getMembers().contains(user)) {
                             user.sendMessage("cantBlockUse");
                             event.setCancelled(true);
                         }
@@ -123,7 +151,7 @@ public class GuildRegionListeners implements Listener {
         Player player = event.getPlayer();
         this.userManager.getUser(player).ifPresent(user -> {
             this.guildManager.getGuild(event.getBlockClicked().getLocation()).forEach(guild -> {
-                if (!guild.getMemebers().getAll().contains(user)) {
+                if (!guild.getMembers().contains(user)) {
                     event.setCancelled(true);
                     user.sendMessage("cantUseBucket");
                     return;
@@ -137,7 +165,7 @@ public class GuildRegionListeners implements Listener {
         Player player = event.getPlayer();
         this.userManager.getUser(player).ifPresent(user -> {
             this.guildManager.getGuild(event.getBlockClicked().getLocation()).forEach(guild -> {
-                if (!guild.getMemebers().getAll().contains(user)) {
+                if (!guild.getMembers().contains(user)) {
                     event.setCancelled(true);
                     user.sendMessage("cantUseBucket");
                     return;
@@ -153,7 +181,7 @@ public class GuildRegionListeners implements Listener {
             Player player = event.getPlayer();
             this.userManager.getUser(player).ifPresent(user -> {
                 this.guildManager.getGuild(player.getLocation()).forEach(guild -> {
-                    if (!guild.getMemebers().getAll().contains(user)) {
+                    if (!guild.getMembers().contains(user)) {
                         event.setCancelled(true);
                         user.sendMessage("cantUseCommand");
                         return;

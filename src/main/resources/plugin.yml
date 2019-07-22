@@ -1,6 +1,11 @@
 name: Guilds
-version: 0.2
+version: 0.4
 main: me.sewer.guilds.GuildsPlugin
+api-version: 1.14
+load: POSTWORLD
+website: https://github.com/Sewer-47/Guilds
+softdepend:
+  - PlaceholderAPI
 authors:
   - Sewer
 commands:

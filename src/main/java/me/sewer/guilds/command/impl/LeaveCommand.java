@@ -3,11 +3,8 @@ package me.sewer.guilds.command.impl;
 import me.sewer.guilds.command.Command;
 import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.guild.GuildRender;
-import me.sewer.guilds.user.User;
 import me.sewer.guilds.user.UserManager;
 import org.bukkit.command.CommandSender;
-
-import java.util.Collection;
 
 public class LeaveCommand extends Command {
 
@@ -25,13 +22,12 @@ public class LeaveCommand extends Command {
         this.userManager.getUser(sender).ifPresent(user -> {
             if (user.getGuild().isPresent()) {
                 Guild guild = user.getGuild().get();
-                if (!guild.getMemebers().getOwner().equals(user)) {
+                if (!guild.getMembers().getOwnerId().equals(user.getUniqueId())) {
                     GuildRender render = guild.getRender();
                     user.sendMessage("leftGuild", render.getTag(), render.getName());
-                    Collection<User> members = guild.getMemebers().getAll();
-                    members.remove(user);
-                    members.forEach(member -> {
-                        member.sendMessage("memberLeftGuild", user.getName());
+                    guild.getMembers().removePlayer(user.getUniqueId());
+                    guild.getMembers().getAll().forEach(member -> {
+                        this.userManager.getUser(member).ifPresent(user1 -> user1.sendMessage("memberLeftGuild", user.getName()));
                     });
                     user.setGuild(null);
                 } else {

@@ -28,7 +28,6 @@ public class EntityExplodeListener implements Listener {
 
         ConfigurationSection configurationSection = this.plugin.getConfig().getConfigurationSection("blocksCanBeDestroyedByTnt");
         for (String key : configurationSection.getKeys(false)) {
-
             Material material = Material.matchMaterial(key);
             if (material != null) {
                 materialIntegerMap.put(material, configurationSection.getInt(key));

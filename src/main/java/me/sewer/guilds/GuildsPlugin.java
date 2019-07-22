@@ -1,8 +1,10 @@
 package me.sewer.guilds;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.sewer.guilds.command.impl.*;
 import me.sewer.guilds.elo.EloAlgorithm;
 import me.sewer.guilds.guild.GuildRegionListeners;
+import me.sewer.guilds.hook.PlaceholderApiHook;
 import me.sewer.guilds.listener.*;
 import me.sewer.guilds.module.Module;
 import me.sewer.guilds.command.BukkitCommand;
@@ -25,6 +27,8 @@ import me.sewer.guilds.user.UserFileManager;
 import me.sewer.guilds.user.UserListeners;
 import me.sewer.guilds.user.UserManager;
 import me.sewer.guilds.validity.guild.GuildValidityTask;
+import me.sewer.guilds.window.WindowManager;
+import me.sewer.guilds.window.listener.WindowBukkitListeners;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -36,6 +40,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class GuildsPlugin extends JavaPlugin {
 
@@ -43,6 +48,7 @@ public class GuildsPlugin extends JavaPlugin {
     private GuildManager guildManager;
     private RegionManager regionManager;
     private MessageManager messageManager;
+    private WindowManager windowManager;
 
     private BaseFileManager userFileManager;
     private BaseFileManager guildFileManager;
@@ -54,6 +60,8 @@ public class GuildsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+
         this.saveDefaultConfig();
 
         MessageLoader messageLoader = new MessageLoader(this);
@@ -63,6 +71,7 @@ public class GuildsPlugin extends JavaPlugin {
         this.userManager = new UserManager();
         this.guildManager = new GuildManager();
         this.regionManager = new RegionManager();
+        this.windowManager = new WindowManager();
 
         String defaultLocale = this.getConfig().getString("defaultLang");
         String language = StringUtils.substring(defaultLocale, 0 ,2);
@@ -109,6 +118,8 @@ public class GuildsPlugin extends JavaPlugin {
 
                 new EntityExplodeListener(this),
 
+                new WindowBukkitListeners(this),
+
         }) {
             pluginManager.registerEvents(listener, this);
         }
@@ -120,11 +131,11 @@ public class GuildsPlugin extends JavaPlugin {
         this.modules = new HashSet<>();
 
         for (Module module : new Module[] {
-                new CreationBanModule(createOptions),
+                new CreationBanModule(createOptions, this.userManager),
                 new TagLengthModule(createOptions),
                 new NameLengthModule(createOptions),
                 new WorldModule(createOptions),
-                new SpawnModule(createOptions),
+                new SpawnDistanceModule(createOptions),
                 new OtherGuildDistanceModule(createOptions),
                 new PrivateChatModule(this.userManager, prefix, format),
         }) {
@@ -137,16 +148,29 @@ public class GuildsPlugin extends JavaPlugin {
         for (Command command : new Command[] {
                 new CreateCommand(this, createOptions),
                 new InfoCommand(this),
-                new AddComand(this.userManager, this.guildManager),
+                new InviteComand(this),
                 new JoinCommand(this),
                 new LeaveCommand(this.userManager),
-                new KickCommand(this.userManager),
+                new KickCommand(this.userManager, this.getMessageManager()),
+                new HomeCommand(this),
+                new SafeCommand(this.userManager),
+                new SethomeCommand(this.userManager, this.messageManager),
+                new DeleteCommand(this),
+                new PermissionsCommand(this.userManager),
         }) {
             bukkitCommand.registerCommand(command);
         }
-        this.getCommand("guild").setExecutor(bukkitCommand);
-    }
 
+        this.getCommand("guild").setExecutor(bukkitCommand);
+
+        if (pluginManager.getPlugin("PlaceholderAPI").isEnabled()) {
+            PlaceholderApiHook placeHolderApiHook = new PlaceholderApiHook(this);
+            if (PlaceholderAPI.registerExpansion(placeHolderApiHook)) {
+                this.getLogger().log(Level.INFO, "PlaceHolderAPI hook has been enabled succesful");
+            }
+
+        }
+    }
     @Override
     public void onDisable() {
 
@@ -168,6 +192,10 @@ public class GuildsPlugin extends JavaPlugin {
         return this.messageManager;
     }
 
+    public WindowManager getWindowManager() {
+        return this.windowManager;
+    }
+
     public BaseFileManager getUserFileManager() {
         return this.userFileManager;
     }
@@ -177,6 +205,6 @@ public class GuildsPlugin extends JavaPlugin {
     }
 
     public EloAlgorithm getEloAlgorithm() {
-        return eloAlgorithm;
+        return this.eloAlgorithm;
     }
 }

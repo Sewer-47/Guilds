@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference;
 public class GuildTerrain {
 
     private final Region region;
-    private final Vector home;
+    private Vector home;
     private final Reference<World> world;
 
     public GuildTerrain(Region region, Location home) {
@@ -30,5 +30,9 @@ public class GuildTerrain {
 
     public Reference<World> getWorld() {
         return world;
+    }
+
+    public void setHome(Vector home) {
+        this.home = home;
     }
 }

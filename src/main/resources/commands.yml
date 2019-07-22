@@ -1,0 +1,8 @@
+showDisabledCommands: true
+disabledCommandsPrefix: "&c!&7"
+
+xyz:
+  displayName: xyz
+  description: xyz
+  aliases:
+    - xyz

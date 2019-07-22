@@ -28,24 +28,29 @@ public class GuildManager {
         if (this.byTag(string).isPresent()) {
             return this.byTag(string);
         } else if (this.byName(string).isPresent()) {
-            return this.byTag(string);
+            return this.byName(string);
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
     public List<Guild> getGuild(Location location) {
-        return this.byTag.values()
-                .stream()
-                .filter(guild -> guild.getTerrain().getRegion().contains(location))
-                .collect(Collectors.toList());
+        List<Guild> guilds = new ArrayList<>();
+        for (Guild guild : this.byTag.values()) {
+            if (guild.getTerrain().getRegion().contains(location)) {
+                guilds.add(guild);
+            }
+        }
+        return guilds;
     }
 
     public Optional<Guild> getGuild(Region region) {
-        return this.byTag.values()
-                .stream()
-                .filter(guild -> guild.getTerrain().getRegion().equals(region))
-                .findFirst();
+        for (Guild guild : this.byTag.values()) {
+            if (guild.getTerrain().getRegion().equals(region)) {
+                return Optional.of(guild);
+            }
+        }
+        return Optional.empty();
     }
 
     public Optional<Guild> byTag(String tag) {

@@ -23,10 +23,9 @@ public class NameLengthModule extends Module {
     public void onCreate(GuildCreateEvent event) {
         Guild guild = event.getGuild();
         GuildRender render = guild.getRender();
-        User user = guild.getMemebers().getOwner();
         String name = render.getName();
         if (name.length() < this.options.tagMinLength() || name.length() > this.options.tagMaxLength()) {
-            user.sendMessage("correctNameLength", this.options.tagMinLength(), this.options.tagMaxLength());
+            event.getWho().sendMessage("correctNameLength", this.options.tagMinLength(), this.options.tagMaxLength());
             event.setCancelled(true);
         }
     }

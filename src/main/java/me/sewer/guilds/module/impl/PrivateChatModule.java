@@ -5,6 +5,7 @@ import me.sewer.guilds.module.Module;
 import me.sewer.guilds.module.ModuleInfo;
 import me.sewer.guilds.user.User;
 import me.sewer.guilds.user.UserManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,8 +33,8 @@ public class PrivateChatModule extends Module {
         if (event.getMessage().startsWith(this.prefix) && user.isPresent() && user.get().getGuild().isPresent()) {
             Guild guild = user.get().getGuild().get();
             event.getRecipients().clear();
-            guild.getMemebers().getAll().forEach(member -> {
-                Player player = member.getBukkit().get();
+            guild.getMembers().getAll().forEach(member -> {
+                Player player = Bukkit.getPlayer(member);
                 if (player != null) {
                     event.getRecipients().add(player);
                 }
