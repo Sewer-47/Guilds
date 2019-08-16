@@ -43,12 +43,12 @@ public class UserManager {
 
     public void registerUser(User user) {
         this.byUniqueId.put(user.getUniqueId(), user);
-        this.byUsername.put(user.getName(), user);
+        this.byUsername.put(user.getUsername(), user);
     }
 
     public void unregisterUser(User user) {
         this.byUniqueId.remove(user.getUniqueId());
-        this.byUsername.remove(user.getName());
+        this.byUsername.remove(user.getUsername());
     }
 
     public Collection<User> getOnline() {

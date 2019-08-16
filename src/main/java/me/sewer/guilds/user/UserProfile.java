@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface UserProfile extends Unique {
 
-    String getName();
+    String getUsername();
 
     Optional<Guild> getGuild();
 

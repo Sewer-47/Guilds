@@ -1,4 +1,4 @@
-package me.sewer.guilds.guild.member;
+package me.sewer.guilds.guild.permission;
 
 public class GuildPermission {
 
@@ -20,11 +20,19 @@ public class GuildPermission {
 
     public static final GuildPermission SETHOME = new GuildPermission("sethome",  "settingHome");
 
+    public static final GuildPermission ALLY = new GuildPermission("ally",  "addingAlliance");
+
+    public static final GuildPermission ACCEPT = new GuildPermission("accept",  "acceptAlliance");
+
+    public static final GuildPermission BREAK = new GuildPermission("break",  "breakAlliance");
+
+    public static final GuildPermission ENEMY = new GuildPermission("enemy",  "addingEnemy");
+
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getDisplayName() {
-        return displayName;
+        return this.displayName;
     }
 }

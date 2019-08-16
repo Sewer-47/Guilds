@@ -1,12 +1,13 @@
-package me.sewer.guilds.guild.member;
+package me.sewer.guilds.guild.permission;
 
+import me.sewer.guilds.guild.member.GuildMember;
+import me.sewer.guilds.guild.member.GuildMembers;
 import me.sewer.guilds.i18n.MessageManager;
 import me.sewer.guilds.user.User;
 import me.sewer.guilds.window.Window;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;

@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
 
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 public class GuildHeart implements Listener {  //THIS CLASS MUST BE REWRITED
 
@@ -25,7 +26,7 @@ public class GuildHeart implements Listener {  //THIS CLASS MUST BE REWRITED
 
     public GuildHeart(GuildRender render, GuildMembers memebers, GuildTerrain terrain, GuildsPlugin plugin) { ;
         this.location = terrain.getHome();
-        this.world = terrain.getWorld();
+        this.world = new WeakReference<>(terrain.getWorld().get());
         this.plugin = plugin;
         this.render = render;
         this.memebers = memebers;
@@ -56,7 +57,7 @@ public class GuildHeart implements Listener {  //THIS CLASS MUST BE REWRITED
         if (entity != null && entity.getType() == EntityType.ENDER_CRYSTAL) {
             if (entity.getLocation().toVector().distance(this.terrain.getHome()) <= 1) {
                 this.plugin.getUserManager().getUser(event.getPlayer()).ifPresent(user -> {
-                 //   user.sendMessage("guildInfo", this.render.getTag(), this.render.getName(), "members", this.memebers.getOwner().getName());
+                 //   user.sendMessage("guildInfo", this.render.getTag(), this.render.getUsername(), "members", this.memebers.getOwner().getUsername());
                     return;
                 });
             }

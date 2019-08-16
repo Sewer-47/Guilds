@@ -1,6 +1,6 @@
 package me.sewer.guilds.guild.member;
 
-import me.sewer.guilds.GuildsPlugin;
+import me.sewer.guilds.guild.permission.GuildPermission;
 import me.sewer.guilds.user.User;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ public class GuildMember {
     private final User user;
     private final List<GuildPermission> guildPermissions = new ArrayList<>();
 
-    public GuildMember(User user, GuildsPlugin plugin) {
+    public GuildMember(User user) {
         this.user = user;
     }
 

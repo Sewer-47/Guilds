@@ -2,4 +2,7 @@
 this plugin requires jre 9
 
 depencies: 
-	spigot 1.13
+    Spigot 1.14.4
+    PlaceHolderAPI
+
+discord: https://discord.gg/94mVcz

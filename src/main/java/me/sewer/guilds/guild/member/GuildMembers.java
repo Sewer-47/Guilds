@@ -22,12 +22,16 @@ public class GuildMembers {
         this.members.remove(playerId);
     }
 
+    public GuildMember getMember(User user) {
+        return this.members.get(user.getUniqueId());
+    }
+
     public GuildMember getMember(UUID uuid) {
         return this.members.get(uuid);
     }
 
     public UUID getOwnerId() {
-        return ownerId;
+        return this.ownerId;
     }
 
     public List<UUID> getAll() {

@@ -1,11 +1,8 @@
 package me.sewer.guilds.listener;
 
-import me.sewer.guilds.GuildsPlugin;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -13,29 +10,15 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.logging.Level;
 
 public class EntityExplodeListener implements Listener {
 
     private final Map<Material, Integer> materialIntegerMap; //idk how name it
     private final Random random;
-    private final GuildsPlugin plugin;
 
-    public EntityExplodeListener(GuildsPlugin plugin) {
-        this.materialIntegerMap = new HashMap<>();
+    public EntityExplodeListener(Map<Material, Integer> materialIntegerMap) {
+        this.materialIntegerMap = materialIntegerMap;
         this.random = new Random();
-        this.plugin = plugin;
-
-        ConfigurationSection configurationSection = this.plugin.getConfig().getConfigurationSection("blocksCanBeDestroyedByTnt");
-        for (String key : configurationSection.getKeys(false)) {
-            Material material = Material.matchMaterial(key);
-            if (material != null) {
-                materialIntegerMap.put(material, configurationSection.getInt(key));
-            } else {
-                this.plugin.getLogger().log(Level.SEVERE, "Cannot parse material " + key);
-            }
-        }
-
     }
 
     @EventHandler

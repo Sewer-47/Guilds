@@ -1,12 +1,20 @@
 package me.sewer.guilds.command.impl.create;
 
+import me.sewer.guilds.GuildsPlugin;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class CreateOptions implements ICreateOptions {
 
+    private final int borderDistance;
     private final int spawnDistance;
     private final int guildDistance;
     private final List<String> allowedWorlds;
@@ -18,9 +26,12 @@ public class CreateOptions implements ICreateOptions {
     private final int nameMaxLength;
     private final String guildSafeName;
     private final int guildSafeSize;
+    private final Map<String, List<ItemStack>> requiredItems;
 
-    public CreateOptions(ConfigurationSection configuration) {
+    public CreateOptions(GuildsPlugin plugin, Map<String, List<ItemStack>> requiredItems) {
+        ConfigurationSection configuration = plugin.getConfig();
         ConfigurationSection render = configuration.getConfigurationSection("guildRender");
+        this.borderDistance = configuration.getInt("minDistanceFromBorder");
         this.spawnDistance = configuration.getInt("minDistanceToSpawn");
         this.guildDistance = configuration.getInt("minDistanceBetweenGuilds");
         this.allowedWorlds = configuration.getStringList("allowedWorlds");
@@ -32,8 +43,18 @@ public class CreateOptions implements ICreateOptions {
         this.nameMaxLength = render.getInt("nameMaxLength");
         this.guildSafeName = ChatColor.translateAlternateColorCodes('&', configuration.getString("guildSafeName"));
         this.guildSafeSize = configuration.getInt("guildSafeSize");
+        this.requiredItems = requiredItems;
     }
 
+    @Override
+    public Map<String, List<ItemStack>> requiredItems() {
+        return this.requiredItems;
+    }
+
+    @Override
+    public int borderDistance() {
+        return this.borderDistance;
+    }
 
     @Override
     public int spawnDistance() {

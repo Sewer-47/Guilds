@@ -2,6 +2,7 @@ package me.sewer.guilds.validity.guild;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.guild.GuildManager;
+import me.sewer.guilds.guild.GuildRelations;
 import me.sewer.guilds.guild.GuildRender;
 import me.sewer.guilds.guild.GuildTerrain;
 import me.sewer.guilds.guild.event.GuildDeleteEvent;
@@ -50,6 +51,12 @@ public class GuildValidityTask implements Runnable {
                             guild.getMembers().removePlayer(uuid);
                         });
                     });
+
+                    GuildRelations guildRelations = guild.getRelations();
+                    guildRelations.getFriends().forEach(ally -> {
+                        ally.getRelations().getFriends().remove(guild);
+                    });
+
                     this.guildManager.unregisterGuild(guild);
                     this.regionManager.byWorldId(world.getUID()).remove(terrain.getRegion());
                     this.windowManager.unregisterWindow(guild.getSafe());

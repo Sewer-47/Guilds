@@ -3,7 +3,7 @@ package me.sewer.guilds.guild;
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.guild.member.GuildMember;
 import me.sewer.guilds.guild.member.GuildMembers;
-import me.sewer.guilds.guild.member.GuildPermission;
+import me.sewer.guilds.guild.permission.GuildPermission;
 import me.sewer.guilds.i18n.MessageManager;
 import me.sewer.guilds.user.User;
 import me.sewer.guilds.window.Window;

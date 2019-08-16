@@ -9,20 +9,20 @@ public class GuildRegionEnterEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
     private final Guild guild;
-    private final Player who;
+    private final Player player;
 
-    public GuildRegionEnterEvent(Guild guild, Player who) {
-        super(true);
+    public GuildRegionEnterEvent(Guild guild, Player player, boolean async) {
+        super(async);
         this.guild = guild;
-        this.who = who;
+        this.player = player;
     }
 
     public Guild getGuild() {
         return this.guild;
     }
 
-    public Player getWho() {
-        return this.who;
+    public Player getPlayer() {
+        return this.player;
     }
 
     public static HandlerList getHandlerList() {

@@ -1,8 +1,9 @@
 package me.sewer.guilds.command;
 
-import org.bukkit.command.CommandSender;
+import me.sewer.guilds.user.User;
 
 public interface ICommand {
 
-    boolean onCommand(CommandSender sender, String[] args);
+    boolean onCommand(User user, String... args);
+
 }

@@ -1,40 +1,43 @@
 package me.sewer.guilds.command;
 
 import me.sewer.guilds.GuildsPlugin;
+import me.sewer.guilds.i18n.MessageManager;
 import me.sewer.guilds.user.User;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.logging.Level;
 
 public class BukkitCommand implements CommandExecutor {
 
-    private final Map<String, Command> commands = new HashMap<>();
     private final GuildsPlugin plugin;
+    private final CommandManager commandManager;
+    private final me.sewer.guilds.command.CommandExecutor commandExecutor;
+    private final MessageManager messageManager;
 
     public BukkitCommand(GuildsPlugin plugin) {
         this.plugin = plugin;
+        this.commandManager = plugin.getCommandManager();
+        this.messageManager = plugin.getMessageManager();
+        this.commandExecutor = new me.sewer.guilds.command.CommandExecutor(this.commandManager, this.messageManager);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String s, String[] args) {
         if (sender instanceof Player) {
             User user = this.plugin.getUserManager().getUser(sender).get();
+            Locale locale = user.getLocale();
             if (args.length >= 1) {
-                for (Command command : commands.values()) {
-                    if (command.getName().equals(args[0].toLowerCase()) || command.getAliases().contains(args[0].toLowerCase())) {
-                        return command.onCommand(sender, args);
-                    }
-                }
-                user.sendMessage("noCommand");
-                return true;
+                this.commandExecutor.execute(args[0], user, Arrays.copyOfRange(args, 1, args.length));
             } else {
-                for (Command command : commands.values()) {
-                    sender.sendMessage(command.getName() + " - " + command.getDescription());
+                for (Command command : this.commandManager.getCommands().values()) {
+                    String message = this.messageManager.getMessage(locale, "format", this.messageManager.getMessage(locale, command.getName()), this.messageManager.getMessage(locale, command.getDescription()));
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                 }
             }
         } else {
@@ -42,17 +45,4 @@ public class BukkitCommand implements CommandExecutor {
         }
         return true;
     }
-
-    public void registerCommand(Command command) {
-        this.commands.put(command.getName(), command);
-    }
-
-    public void unregisterCommand(Command command) {
-        this.commands.remove(command.getName());
-    }
-
-    public Map<String, Command> getCommands() {
-        return this.commands;
-    }
-
 }

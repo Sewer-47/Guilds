@@ -12,7 +12,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlaceholderApiHook extends PlaceholderExpansion {
+public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     private final GuildsPlugin plugin;
     private final UserManager userManager;
@@ -20,7 +20,7 @@ public class PlaceholderApiHook extends PlaceholderExpansion {
     private final Map<String, ToStringFunction<User>> placeholders;
     private final MessageManager messageManager;
 
-    public PlaceholderApiHook(GuildsPlugin plugin) {
+    public PlaceholderAPIHook(GuildsPlugin plugin) {
         this.plugin = plugin;
         this.userManager = plugin.getUserManager();
         this.description = plugin.getDescription();

@@ -24,10 +24,10 @@ public class MessageMap extends HashMap<String, String> {
     }
 
     public Locale getLocale() {
-        return locale;
+        return this.locale;
     }
 
     public Function<String, String> getUndefined() {
-        return undefined;
+        return this.undefined;
     }
 }

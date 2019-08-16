@@ -1,4 +1,4 @@
-package me.sewer.guilds.module.impl;
+package me.sewer.guilds.module.impl.render;
 
 import me.sewer.guilds.command.impl.create.CreateOptions;
 import me.sewer.guilds.guild.Guild;
@@ -10,12 +10,12 @@ import me.sewer.guilds.user.User;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-@ModuleInfo(name = "NameLengthModule")
-public class NameLengthModule extends Module {
+@ModuleInfo(name = "TagLengthModule")
+public class TagLengthModule extends Module {
 
     private final CreateOptions options;
 
-    public NameLengthModule(CreateOptions options) {
+    public TagLengthModule(CreateOptions options) {
         this.options = options;
     }
 
@@ -23,9 +23,10 @@ public class NameLengthModule extends Module {
     public void onCreate(GuildCreateEvent event) {
         Guild guild = event.getGuild();
         GuildRender render = guild.getRender();
-        String name = render.getName();
-        if (name.length() < this.options.tagMinLength() || name.length() > this.options.tagMaxLength()) {
-            event.getWho().sendMessage("correctNameLength", this.options.tagMinLength(), this.options.tagMaxLength());
+        User user = event.getCreator();
+        String tag = render.getTag();
+        if (tag.length() < this.options.tagMinLength() || tag.length() > this.options.tagMaxLength()) {
+            user.sendMessage("correctTagLength", this.options.tagMinLength(), this.options.tagMaxLength());
             event.setCancelled(true);
         }
     }

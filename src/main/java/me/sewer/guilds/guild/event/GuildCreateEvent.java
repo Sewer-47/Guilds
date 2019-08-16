@@ -10,20 +10,20 @@ public class GuildCreateEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
     private final Guild guild;
-    private final User who;
+    private final User creator;
     private boolean cancelled;
 
-    public GuildCreateEvent(Guild guild, User who) {
+    public GuildCreateEvent(Guild guild, User creator) {
         this.guild = guild;
-        this.who = who;
+        this.creator = creator;
     }
 
     public Guild getGuild() {
         return this.guild;
     }
 
-    public User getWho() {
-        return who;
+    public User getCreator() {
+        return this.creator;
     }
 
     public static HandlerList getHandlerList() {

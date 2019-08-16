@@ -1,7 +1,6 @@
-package me.sewer.guilds.module.impl;
+package me.sewer.guilds.module.impl.world;
 
 import me.sewer.guilds.command.impl.create.CreateOptions;
-import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.guild.event.GuildCreateEvent;
 import me.sewer.guilds.module.Module;
 import me.sewer.guilds.module.ModuleInfo;
@@ -10,23 +9,26 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.util.Vector;
 
-@ModuleInfo(name = "SpawnDistanceModule")
-public class SpawnDistanceModule extends Module {
+@ModuleInfo(name = "OtherGuildDistanceModule")
+public class OtherGuildDistanceModule extends Module {
 
     private final CreateOptions options;
 
-    public SpawnDistanceModule(CreateOptions options) {
+    public OtherGuildDistanceModule(CreateOptions options) {
         this.options = options;
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true )
     public void onCreate(GuildCreateEvent event) {
-        User user = event.getWho();
-        user.getBukkit().ifPresent(player -> {
-            Location location = player.getLocation();
-            if (location.distance(location.getWorld().getSpawnLocation()) <= this.options.spawnDistance()) {
-                user.sendMessage("tooNearSpawn");
+        User user = event.getCreator();
+        Player player = user.getBukkit().get();
+        Location location = player.getLocation();
+        this.getPlugin().getGuildManager().getAll().forEach(guild -> {
+            Vector home = guild.getTerrain().getHome();
+            if (home.distance(location.toVector()) <= this.options.guildDistance()) {
+                user.sendMessage("tooNearOtherGuild");
                 event.setCancelled(true);
             }
         });

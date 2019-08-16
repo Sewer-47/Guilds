@@ -2,24 +2,24 @@ package me.sewer.guilds.command.impl;
 
 import me.sewer.guilds.command.Command;
 import me.sewer.guilds.guild.Guild;
-import me.sewer.guilds.user.UserManager;
-import org.bukkit.command.CommandSender;
+import me.sewer.guilds.user.User;
 
 public class PermissionsCommand extends Command {
 
-    private final UserManager userManager;
+    public static final String NAME = "perms";
 
-    public PermissionsCommand(UserManager userManager) {
-        super("perm", "perms",  "uprawnienia", "perms");
-        this.userManager = userManager;
+    public PermissionsCommand() {
+        super(NAME, "uprawnienia", "perm", "permissions", "permission");
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String[] args) {
-        this.userManager.getUser(sender).ifPresent(user -> {
-            Guild guild = user.getGuild().get();
-            guild.getPermission().open(user);
-        });
+    public boolean onCommand(User user, String... args) {
+        if (!user.getGuild().isPresent()) {
+            user.sendMessage("noGuild");
+            return true;
+        }
+        Guild guild = user.getGuild().get();
+        guild.getPermissionWindow().open(user);
         return true;
     }
 }

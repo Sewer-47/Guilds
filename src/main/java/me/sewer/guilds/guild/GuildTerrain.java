@@ -7,29 +7,36 @@ import org.bukkit.util.Vector;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Optional;
 
 public class GuildTerrain {
 
     private final Region region;
+    private final Vector center;
     private Vector home;
     private final Reference<World> world;
 
     public GuildTerrain(Region region, Location home) {
         this.region = region;
-        this.home = home.toVector();
+        this.center = home.toVector();
+        this.home = center;
         this.world = new WeakReference<>(home.getWorld());
     }
 
     public Region getRegion() {
-        return region;
+        return this.region;
+    }
+
+    public Vector getCenter() {
+        return this.center;
     }
 
     public Vector getHome() {
-        return home;
+        return this.home;
     }
 
-    public Reference<World> getWorld() {
-        return world;
+    public Optional<World> getWorld() {
+        return Optional.ofNullable(this.world.get());
     }
 
     public void setHome(Vector home) {

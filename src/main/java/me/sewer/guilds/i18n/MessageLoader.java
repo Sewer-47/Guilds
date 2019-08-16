@@ -1,9 +1,11 @@
 package me.sewer.guilds.i18n;
 
 import me.sewer.guilds.GuildsPlugin;
+import org.apache.commons.lang.CharSet;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -35,7 +37,7 @@ public class MessageLoader {
        Properties properties = new Properties();
        try {
            InputStream inputStream = new FileInputStream(file);
-           properties.load(inputStream);
+           properties.load(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
            Collections.list(properties.keys()).forEach(key -> messageMap.put(key.toString(), properties.getProperty(key.toString())));
        } catch (IOException e) {
            this.plugin.getLogger().log(Level.SEVERE, "Cannot load language file " + name + " ", e);

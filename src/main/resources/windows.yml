@@ -1,0 +1,8 @@
+items:
+  name: "&6Itemy na gildie"
+  size: 36
+  1:
+    material: stone
+    quantity: 10
+    name: "&6Kamien"
+    lore: "&6Kozacki kamien"

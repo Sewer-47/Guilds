@@ -27,7 +27,7 @@ public class PrivateChatModule extends Module {
         this.format = format;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true )
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
         Optional<User> user = this.userManager.getUser(event.getPlayer());
         if (event.getMessage().startsWith(this.prefix) && user.isPresent() && user.get().getGuild().isPresent()) {
@@ -41,8 +41,8 @@ public class PrivateChatModule extends Module {
             });
             String message = event.getMessage().substring(1);
             event.setFormat(ChatColor.translateAlternateColorCodes('&',
-                    format.replace("{0}", user.get().getName())
-                    .replace("{1}", message)));
+                    format.replace("{0}", user.get().getUsername())
+                            .replace("{1}", message)));
         }
     }
 }

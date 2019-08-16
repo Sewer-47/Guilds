@@ -1,5 +1,5 @@
 name: Guilds
-version: 0.4
+version: 0.5
 main: me.sewer.guilds.GuildsPlugin
 api-version: 1.14
 load: POSTWORLD
@@ -14,3 +14,4 @@ commands:
     aliases:
       - g
       - gildia
+      - gildie

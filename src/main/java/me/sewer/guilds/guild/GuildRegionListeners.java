@@ -55,7 +55,7 @@ public class GuildRegionListeners implements Listener {
             return;
         }
         if (this.guildManager.getGuild(region).isPresent()) {
-            Event guildRegionEnterEvent = new GuildRegionEnterEvent(this.guildManager.getGuild(region).get(), event.getPlayer());
+            Event guildRegionEnterEvent = new GuildRegionEnterEvent(this.guildManager.getGuild(region).get(), event.getPlayer(), true);
             Bukkit.getPluginManager().callEvent(guildRegionEnterEvent);
         }
     }
@@ -67,21 +67,23 @@ public class GuildRegionListeners implements Listener {
             return;
         }
         if (this.guildManager.getGuild(event.getRegion()).isPresent()) {
-            Event guildRegionQuitEvent = new GuildRegionQuitEvent(this.guildManager.getGuild(region).get(), event.getPlayer());
+            Event guildRegionQuitEvent = new GuildRegionQuitEvent(this.guildManager.getGuild(region).get(), event.getPlayer(), true);
             Bukkit.getPluginManager().callEvent(guildRegionQuitEvent);
         }
     }
 
     @EventHandler
     public void onGuildRegionEnter(GuildRegionEnterEvent event) {
-        Player player = event.getWho();
-        this.userManager.getUser(player).ifPresent(user -> user.sendMessage("guildRegionEnter", event.getGuild().getRender().getTag()));
+        Player player = event.getPlayer();
+        GuildRender render = event.getGuild().getRender();
+        this.userManager.getUser(player).ifPresent(user -> user.sendMessage("guildRegionEnter", render.getTag(), render.getName(), render.getDescription()));
     }
 
     @EventHandler
     public void onGuildRegionQuit(GuildRegionQuitEvent event) {
-        Player player = event.getWho();
-        this.userManager.getUser(player).ifPresent(user -> user.sendMessage("guildRegionQuit", event.getGuild().getRender().getTag()));
+        Player player = event.getPlayer();
+        GuildRender render = event.getGuild().getRender();
+        this.userManager.getUser(player).ifPresent(user -> user.sendMessage("guildRegionQuit", render.getTag(), render.getName(), render.getDescription()));
     }
 
     @EventHandler

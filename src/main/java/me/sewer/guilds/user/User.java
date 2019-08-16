@@ -4,7 +4,7 @@ import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.elo.Elo;
 import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.i18n.MessageManager;
-import me.sewer.guilds.request.Request;
+import me.sewer.guilds.Request;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,20 +20,22 @@ import java.util.UUID;
 
 public class User implements UserProfile {
 
-    private final String name;
+    private final String username;
     private final UUID uniqueId;
     private final Reference<Player> bukkit;
     private final MessageManager messageManager;
     private Guild guild;
     private Locale locale;
     private final Elo elo;
+    private final UserKDA kda;
     private Optional<Request> lastRequest = Optional.empty();
 
     public User(Player bukkit, GuildsPlugin plugin) {
-        this.name = bukkit.getName();
+        this.username = bukkit.getName();
         this.uniqueId = bukkit.getUniqueId();
         this.bukkit = new WeakReference<>(bukkit);
         this.messageManager = plugin.getMessageManager();
+        this.kda = new UserKDA();
 
         String name = bukkit.getLocale();
         String language = StringUtils.substring(name, 0 ,2);
@@ -72,7 +74,11 @@ public class User implements UserProfile {
     }
 
     public Request getLastRequest() {
-        return !this.lastRequest.isPresent() ? this.lastRequest.get() : null;
+        return this.lastRequest.isPresent() ? this.lastRequest.get() : null;
+    }
+
+    public void setLastRequest(Optional<Request> lastRequest) {
+        this.lastRequest = lastRequest;
     }
 
     public void request(Request request) {
@@ -98,8 +104,8 @@ public class User implements UserProfile {
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public String getUsername() {
+        return this.username;
     }
 
     @Override
@@ -131,8 +137,12 @@ public class User implements UserProfile {
         return Optional.ofNullable(this.bukkit.get());
     }
 
+    public UserKDA getKda() {
+        return this.kda;
+    }
+
     public Elo getElo() {
-        return elo;
+        return this.elo;
     }
 
     public void sendMessage(String message, Object... params) {

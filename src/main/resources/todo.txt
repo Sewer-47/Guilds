@@ -1,0 +1,32 @@
+#TODO ogolnie musze zrobic
+  #DUMMY Z RANKIEM
+  #TOPKA RANKINGU
+  #w info gracza ma byc KDA I RANKING
+  #poprawic EntityExplodeListener
+  #cooldwown w zakladaniu gildii i zmienianiu nazwy i tagu gildii
+  w requestach uzywac wlasnego
+
+#TODO przemyslec czy zrobic
+  #Dodanie zmiennej od liczenia ilości wylogowań się gracza podczas walki i ilości asyst
+  #pomyslec nad api skript
+  #lista gildii w gui
+  #kolory graczy gildii i prefixy
+  #https://skript.pl/temat/20075-protocoltab-api-do-zarz%C4%85dzania-tablist%C4%85-18/ moze te tego api do tablisty uzyje fest
+
+#Relase 1.0 TODO to musze zrobic zanim bedzie relase 1.0 pluginu
+  #menu ustawien gildii
+  #efekty w gui
+  #bloki chronione przed wybuchem tnt
+  #KOMENDY ADMINA
+  #trzeba sprawdzac swiat przy usuwaniu regionow gildii
+  #dokonczyc system uprawnien
+
+#Plany na kolejny commit: Wars update
+      #permisja do stawiania i usuwania niektorych blokow
+      #ENDERCRYSTALE MAJA BYC ZROBIONE PAKIETAMI
+      #PODBIJANIE GILDII
+      #komenda od resetowania rankingu
+      #gildie mozna podbijac dopiero po jakims czasie
+      #MAKSYMALNA ILOSC GRACZY W GILDII, sojuszy i wrogow
+      #wyjatek zeby nie dawalo pkt za zabicie tego samego gracza
+      #intruz na terenie gildii

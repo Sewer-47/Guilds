@@ -1,6 +1,6 @@
 package me.sewer.guilds.command;
 
-import org.bukkit.command.CommandSender;
+import me.sewer.guilds.user.User;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,16 +9,18 @@ public class Command implements ICommand {
 
     private final String name;
     private final String description;
+    private final String usage;
     private final List<String> aliases;
 
-    public Command(String name, String description, String... aliases) {
+    public Command(String name, String... aliases) {
         this.name = name;
-        this.description = description;
+        this.description = name + "Description";
+        this.usage = name + "Usage";
         this.aliases = Arrays.asList(aliases);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String[] args) {
+    public boolean onCommand(User user, String... args) {
         return false;
     }
 
@@ -30,7 +32,11 @@ public class Command implements ICommand {
         return this.description;
     }
 
+    public String getUsage() {
+        return this.usage;
+    }
+
     public List<String> getAliases() {
-        return aliases;
+        return this.aliases;
     }
 }
