@@ -11,17 +11,20 @@ public class GuildManager {
 
     private final Map<String, Guild> byTag = new ConcurrentHashMap<>(); //Async
     private final Map<String, Guild> byName = new ConcurrentHashMap<>();
+    private final Map<UUID, Guild> byUniqueId = new ConcurrentHashMap<>();
 
     public void registerGuild(Guild guild) {
         GuildRender render = guild.getRender();
         this.byTag.put(render.getTag(), guild);
         this.byName.put(render.getName(), guild);
+        this.byUniqueId.put(guild.getUniqueId(), guild);
     }
 
     public void unregisterGuild(Guild guild) {
         GuildRender render = guild.getRender();
         this.byTag.remove(render.getTag());
         this.byName.remove(render.getName());
+        this.byUniqueId.remove(guild.getUniqueId());
     }
 
     public Optional<Guild> getGuild(String string) {
@@ -53,12 +56,20 @@ public class GuildManager {
         return Optional.empty();
     }
 
+    public Optional<Guild> getGuild(UUID uniqueId) {
+        return this.byUniqueId(uniqueId);
+    }
+
     public Optional<Guild> byTag(String tag) {
         return Optional.ofNullable(this.byTag.get(tag));
     }
 
     public Optional<Guild> byName(String name) {
         return Optional.ofNullable(this.byName.get(name));
+    }
+
+    public Optional<Guild> byUniqueId(UUID uniqueId) {
+        return Optional.ofNullable(this.byUniqueId.get(uniqueId));
     }
 
     public Collection<Guild> getAll() {

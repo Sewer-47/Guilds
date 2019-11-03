@@ -1,9 +1,9 @@
 package me.sewer.guilds.command.impl.ally;
 
 import me.sewer.guilds.GuildsPlugin;
+import me.sewer.guilds.Relation;
 import me.sewer.guilds.Request;
 import me.sewer.guilds.guild.Guild;
-import me.sewer.guilds.guild.GuildRelations;
 import me.sewer.guilds.guild.GuildRender;
 import me.sewer.guilds.user.UserManager;
 
@@ -41,16 +41,8 @@ public class AllyRequest implements Request {
         this.guild.getMembers().getAll().forEach(member -> {
             this.userManager.getUser(member).ifPresent(user -> user.sendMessage("nowAlly", ownerRender.getTag(), ownerRender.getName()));
         });
-        GuildRelations guildRelations = this.guild.getRelations();
-        GuildRelations ownerRelations = this.owner.getRelations();
-        this.owner.getRelations().getFriends().add(this.guild);
-        this.guild.getRelations().getFriends().add(this.owner);
-        if (guildRelations.getEnemies().contains(owner)) {
-            guildRelations.getEnemies().remove(owner);
-        }
-        if (ownerRelations.getEnemies().contains(guild)) {
-            ownerRelations.getEnemies().remove(guild);
-        }
+        this.owner.getRelations().set(this.guild.getUniqueId(), Relation.ALLY);
+        this.guild.getRelations().set(this.owner.getUniqueId(), Relation.ALLY);
     }
 
     public Guild getGuild() {

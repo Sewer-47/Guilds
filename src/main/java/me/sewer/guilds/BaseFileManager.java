@@ -19,4 +19,5 @@ public class BaseFileManager {
 	public File getDirectory() {
 	    return this.directory;
 	}
+
 }

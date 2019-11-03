@@ -2,65 +2,68 @@ package me.sewer.guilds.guild;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.guild.member.GuildMembers;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
+import java.util.*;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-
-public class GuildHeart implements Listener {  //THIS CLASS MUST BE REWRITED
+public class GuildHeart implements Listener { //members variable
 
     private final Vector location;
-    private final Reference<World> world;
+    private final UUID worldId;
     private final GuildsPlugin plugin;
     private final GuildRender render;
     private final GuildMembers memebers;
-    private final GuildTerrain terrain;
+    private EnderCrystal crystal;
 
-    public GuildHeart(GuildRender render, GuildMembers memebers, GuildTerrain terrain, GuildsPlugin plugin) { ;
+    public GuildHeart(GuildRender render, GuildMembers memebers, GuildTerrain terrain, GuildsPlugin plugin) {
         this.location = terrain.getHome();
-        this.world = new WeakReference<>(terrain.getWorld().get());
+        this.worldId = terrain.getWorld().get().getUID(); //fix it
         this.plugin = plugin;
         this.render = render;
         this.memebers = memebers;
-        this.terrain = terrain;
     }
 
     public void create() {
-        if (this.world.get() != null) {
-            World world = this.world.get();
+        World world = Bukkit.getWorld(this.worldId);
+        if (world != null) {
             Location location = new Location(world, this.location.getX(), this.location.getY(), this.location.getZ());
-            world.spawnEntity(location, EntityType.ENDER_CRYSTAL);
+            this.crystal = world.spawn(location, EnderCrystal.class);
+            this.crystal.setInvulnerable(true);
+        }
+    }
+
+    public void kill() {
+        if (this.crystal != null) {
+            this.crystal.remove();
         }
     }
 
     @EventHandler
-    public void onDeath(EntityDeathEvent event) {
-        Entity entity = event.getEntity();
-        if (entity.getType() == EntityType.ENDER_CRYSTAL) {
-            if (entity.getLocation().toVector().distance(this.location) <= 1) {
-                this.create();
-            }
+    public void onDamage(EntityDamageEvent event) {
+        if (event.getEntity().equals(this.crystal)) {
+            event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {
         Entity entity = event.getRightClicked();
-        if (entity != null && entity.getType() == EntityType.ENDER_CRYSTAL) {
-            if (entity.getLocation().toVector().distance(this.terrain.getHome()) <= 1) {
-                this.plugin.getUserManager().getUser(event.getPlayer()).ifPresent(user -> {
-                 //   user.sendMessage("guildInfo", this.render.getTag(), this.render.getUsername(), "members", this.memebers.getOwner().getUsername());
-                    return;
-                });
-            }
+        if (entity != null && entity.equals(this.crystal)) {
+            this.plugin.getUserManager().getUser(event.getPlayer()).ifPresent(user -> {
+                user.sendMessage("guildInfo", this.render.getTag(), this.render.getName(), "members");
+            });
         }
+    }
+
+    public EnderCrystal getCrystal() {
+        return this.crystal;
     }
 }

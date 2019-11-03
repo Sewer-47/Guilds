@@ -7,12 +7,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class UserListeners implements Listener {
+public class UserTrackerListeners implements Listener {
 
     private final UserManager userManager;
     private final GuildsPlugin plugin;
 
-    public UserListeners(GuildsPlugin plugin) {
+    public UserTrackerListeners(GuildsPlugin plugin) {
         this.userManager = plugin.getUserManager();
         this.plugin = plugin;
     }

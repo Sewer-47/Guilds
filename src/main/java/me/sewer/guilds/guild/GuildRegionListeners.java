@@ -4,8 +4,8 @@ import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.guild.event.GuildRegionEnterEvent;
 import me.sewer.guilds.guild.event.GuildRegionQuitEvent;
 import me.sewer.guilds.region.Region;
-import me.sewer.guilds.region.event.PlayerRegionEnterEvent;
-import me.sewer.guilds.region.event.PlayerRegionQuitEvent;
+import me.sewer.guilds.region.event.AsyncPlayerRegionEnterEvent;
+import me.sewer.guilds.region.event.AsyncPlayerRegionQuitEvent;
 import me.sewer.guilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -49,7 +49,7 @@ public class GuildRegionListeners implements Listener {
     }
 
     @EventHandler
-    public void onRegionEnter(PlayerRegionEnterEvent event) {
+    public void onRegionEnter(AsyncPlayerRegionEnterEvent event) {
         Region region = event.getRegion();
         if (!this.guildManager.getGuild(region).isPresent()) {
             return;
@@ -61,7 +61,7 @@ public class GuildRegionListeners implements Listener {
     }
 
     @EventHandler
-    public void onRegionQuit(PlayerRegionQuitEvent event) {
+    public void onRegionQuit(AsyncPlayerRegionQuitEvent event) {
         Region region = event.getRegion();
         if (!this.guildManager.getGuild(region).isPresent()) {
             return;

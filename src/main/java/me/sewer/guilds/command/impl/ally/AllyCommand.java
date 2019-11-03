@@ -51,7 +51,7 @@ public class AllyCommand extends Command {
             return true;
         }
         Guild target = this.guildManager.getGuild(args[0]).get();
-        if (guildRelations.getFriends().contains(target)) {
+        if (guildRelations.isAlly(target.getUniqueId())) {
             user.sendMessage("guildIsYourFriend");
             return true;
         }
@@ -66,7 +66,7 @@ public class AllyCommand extends Command {
         });
         user.sendMessage("allyRequestSent", targetRender.getTag(), targetRender.getName());
         Request request = new AllyRequest(target, guild, this.plugin);
-        target.getRelations().request(request); //add timeout
+        target.getRelations().request(request); //set timeout
         return true;
     }
 }

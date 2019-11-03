@@ -1,10 +1,13 @@
 package me.sewer.guilds.region;
 
+import me.sewer.guilds.Unique;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
-public interface IRegion {
+import java.util.UUID;
+
+public interface IRegion extends Unique {
 
     default boolean contains(Vector vector) {
         return this.contains(vector.getX(), vector.getY(), vector.getZ());
@@ -20,5 +23,7 @@ public interface IRegion {
     }
 
     boolean contains(double x, double y, double z);
+
+    RegionBounds getBounds();
 }
 

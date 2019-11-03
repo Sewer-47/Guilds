@@ -1,14 +1,19 @@
 package me.sewer.guilds.guild;
 
+import me.sewer.guilds.Messageable;
 import me.sewer.guilds.Unique;
 import me.sewer.guilds.guild.member.GuildMembers;
 import me.sewer.guilds.guild.permission.PermissionsWindow;
 import me.sewer.guilds.validity.Validity;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.Objects;
 import java.util.UUID;
 
-public class Guild implements Unique {
+public class Guild implements Unique, Messageable {
 
     private final UUID uniqueId;
     private final GuildRender render;
@@ -33,24 +38,11 @@ public class Guild implements Unique {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Guild guild = (Guild) o;
-        return Objects.equals(uniqueId, guild.uniqueId) &&
-                Objects.equals(render, guild.render) &&
-                Objects.equals(members, guild.members) &&
-                Objects.equals(terrain, guild.terrain) &&
-                Objects.equals(relations, guild.relations) &&
-                Objects.equals(heart, guild.heart) &&
-                Objects.equals(safe, guild.safe) &&
-                Objects.equals(permissionWindow, guild.permissionWindow) &&
-                Objects.equals(validity, guild.validity);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(uniqueId, render, members, terrain, relations, heart, safe, permissionWindow, validity);
+    public void send(ChatMessageType position, BaseComponent message) {
+        for (UUID playerId : this.getMembers().getAll()) {
+            Player player = Bukkit.getPlayer(playerId);
+            player.spigot().sendMessage(position, message);
+        }
     }
 
     @Override
@@ -88,5 +80,26 @@ public class Guild implements Unique {
 
     public Validity getValidity() {
         return this.validity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        Guild guild = (Guild) o;
+        return Objects.equals(uniqueId, guild.uniqueId) &&
+                Objects.equals(render, guild.render) &&
+                Objects.equals(members, guild.members) &&
+                Objects.equals(terrain, guild.terrain) &&
+                Objects.equals(relations, guild.relations) &&
+                Objects.equals(heart, guild.heart) &&
+                Objects.equals(safe, guild.safe) &&
+                Objects.equals(permissionWindow, guild.permissionWindow) &&
+                Objects.equals(validity, guild.validity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uniqueId, render, members, terrain, relations, heart, safe, permissionWindow, validity);
     }
 }

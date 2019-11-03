@@ -48,15 +48,16 @@ public class DeleteCommand extends Command {
                 });
 
                 GuildRelations guildRelations = guild.getRelations();
-                guildRelations.getFriends().forEach(ally -> {
-                    ally.getRelations().getFriends().remove(guild);
+                guildRelations.getAll().keySet().forEach(allyId -> {
+                    this.guildManager.getGuild(allyId).ifPresent(ally -> ally.getRelations().remove(guild.getUniqueId()));
                 });
 
                 this.guildManager.unregisterGuild(guild);
                 GuildTerrain guildTerrain = guild.getTerrain();
-                World world = guildTerrain.getWorld().get(); //Must be check
+                World world = guildTerrain.getWorld().get(); //Must be checked
                 this.regionManager.byWorldId(world.getUID()).remove(guildTerrain.getRegion());
                 this.windowManager.unregisterWindow(guild.getSafe());
+                guild.getHeart().kill();
             }
         } else {
             user.sendMessage("mustBeOwner");

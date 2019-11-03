@@ -20,22 +20,26 @@ import java.util.UUID;
 
 public class User implements UserProfile {
 
+    private final GuildsPlugin plugin;
     private final String username;
     private final UUID uniqueId;
     private final Reference<Player> bukkit;
     private final MessageManager messageManager;
-    private Guild guild;
-    private Locale locale;
     private final Elo elo;
     private final UserKDA kda;
-    private Optional<Request> lastRequest = Optional.empty();
+    private UUID guildId;
+    private Optional<Request> lastRequest;
+    private Locale locale;;
 
     public User(Player bukkit, GuildsPlugin plugin) {
+        this.plugin = plugin;
         this.username = bukkit.getName();
         this.uniqueId = bukkit.getUniqueId();
         this.bukkit = new WeakReference<>(bukkit);
         this.messageManager = plugin.getMessageManager();
         this.kda = new UserKDA();
+        this.lastRequest = Optional.empty();
+
 
         String name = bukkit.getLocale();
         String language = StringUtils.substring(name, 0 ,2);
@@ -110,7 +114,7 @@ public class User implements UserProfile {
 
     @Override
     public Optional<Guild> getGuild() {
-        return Optional.ofNullable(this.guild);
+        return this.plugin.getGuildManager().getGuild(this.guildId);
     }
 
     @Override
@@ -120,7 +124,7 @@ public class User implements UserProfile {
 
     @Override
     public void setGuild(Guild guild) {
-        this.guild = guild;
+        this.guildId = guild.getUniqueId();
     }
 
     @Override

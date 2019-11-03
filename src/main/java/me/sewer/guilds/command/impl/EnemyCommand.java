@@ -1,6 +1,7 @@
 package me.sewer.guilds.command.impl;
 
 import me.sewer.guilds.GuildsPlugin;
+import me.sewer.guilds.Relation;
 import me.sewer.guilds.command.Command;
 import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.guild.GuildManager;
@@ -12,6 +13,8 @@ import me.sewer.guilds.i18n.MessageManager;
 import me.sewer.guilds.user.User;
 import me.sewer.guilds.user.UserManager;
 import org.bukkit.Bukkit;
+
+import java.util.UUID;
 
 public class EnemyCommand extends Command {
 
@@ -40,6 +43,9 @@ public class EnemyCommand extends Command {
 
             Guild guild = user.getGuild().get();
 
+            UUID targetId = target.getUniqueId();
+            UUID guildId = guild.getUniqueId();
+
             GuildMembers guildMembers = guild.getMembers();
             if (!guildMembers.getMember(user.getUniqueId()).hasPermission(GuildPermission.ENEMY)) {
                 String perm = this.messageManager.getMessage(user.getLocale(), GuildPermission.ENEMY.getDisplayName());
@@ -52,20 +58,18 @@ public class EnemyCommand extends Command {
                 return;
             }
             GuildRelations guildRelations = guild.getRelations();
-            if (guildRelations.getEnemies().contains(target)) {
+            Relation relation = guild.getRelations().relation(targetId);
+            if (!guildRelations.isAlly(targetId)) {
                 user.sendMessage("StillEnemies");
                 return;
             }
 
             GuildRender guildRender = guild.getRender();
 
-            if (guildRelations.getFriends().contains(target)) {
-                guildRelations.getFriends().remove(target);
-                target.getRelations().getFriends().remove(guild);
-            }
+
             GuildRender targetRender = target.getRender();
-            guildRelations.getEnemies().add(target);
-            target.getRelations().getEnemies().add(guild);
+            guildRelations.set(targetId, Relation.ENEMY);
+            target.getRelations().set(guildId, Relation.ENEMY);
             Bukkit.getOnlinePlayers().forEach(player -> {
                 this.userManager.getUser(player).ifPresent(user1 -> user1.sendMessage("guildsIsEnemies",
                         guildRender.getTag(),

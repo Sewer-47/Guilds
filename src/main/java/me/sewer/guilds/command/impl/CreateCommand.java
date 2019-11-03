@@ -1,4 +1,4 @@
-package me.sewer.guilds.command.impl.create;
+package me.sewer.guilds.command.impl;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.command.Command;
@@ -8,17 +8,21 @@ import me.sewer.guilds.guild.member.GuildMember;
 import me.sewer.guilds.guild.member.GuildMembers;
 import me.sewer.guilds.guild.permission.GuildPermission;
 import me.sewer.guilds.guild.permission.PermissionsWindow;
+import me.sewer.guilds.hook.WorldEditHook;
 import me.sewer.guilds.i18n.MessageManager;
-import me.sewer.guilds.region.CuboidRegion;
+import me.sewer.guilds.options.CreateOptions;
+import me.sewer.guilds.region.impl.CuboidRegion;
 import me.sewer.guilds.region.Region;
 import me.sewer.guilds.user.User;
 import me.sewer.guilds.validity.Validity;
+import me.sewer.guilds.vector.Vector3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Random;
@@ -130,6 +134,11 @@ public class CreateCommand extends Command {
                     String lack = this.messageManager.getMessage(user.getLocale(), "lack");
                     user.sendMessage("guildCreate", render.getTag(), render.getName(), lack);
                     this.plugin.getUserManager().getOnline().forEach(user1 -> user1.sendMessage("guildCreateBc", user.getUsername(), render.getTag(), render.getName(), lack));
+                }
+                WorldEditHook worldEditHook = this.plugin.getWorldEditHook();
+                if (worldEditHook != null) {
+                    File file = new File(this.plugin.getDataFolder(), "build.schem");
+                    worldEditHook.paste(Vector3.fromBukkit(location.toVector()), world.getUID(), file, false);
                 }
             }
         } else {

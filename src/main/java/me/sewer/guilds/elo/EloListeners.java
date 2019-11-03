@@ -2,6 +2,7 @@ package me.sewer.guilds.elo;
 
 import me.sewer.guilds.GuildsPlugin;
 import me.sewer.guilds.i18n.MessageManager;
+import me.sewer.guilds.user.UserKDA;
 import me.sewer.guilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,9 +30,13 @@ public class EloListeners implements Listener {
         if (event.getEntity() instanceof Player && event.getEntity().getKiller() instanceof Player) {
             this.userManager.getUser(event.getEntity()).ifPresent(victim -> {
                 this.userManager.getUser(event.getEntity().getKiller()).ifPresent(killer -> {
+                    UserKDA killerKDA = killer.getKda();
+                    UserKDA victimKDA = victim.getKda();
+                    killerKDA.setKills(killerKDA.getKills() + 1);
+                    victimKDA.setDeaths(victimKDA.getDeaths() + 1);
                     Elo victimElo = victim.getElo();
                     Elo killerElo = killer.getElo();
-                    int newVictimElo = this.eloAlgorithm.calculateVictim(victimElo, killerElo);
+                    int newVictimElo = this.eloAlgorithm.calculateVictim(killerElo, victimElo);
                     int newKillerElo = this.eloAlgorithm.calculateKiller(killerElo, victimElo);
                     Player player = event.getEntity().getKiller();
                     Locale locale = killer.getLocale();

@@ -20,7 +20,7 @@ public class InviteCommand extends Command {
     private final GuildsPlugin plugin;
 
     public InviteCommand(GuildsPlugin plugin) {
-        super(NAME, "dodaj", "zapros", "add");
+        super(NAME, "dodaj", "zapros", "set");
         this.userManager = plugin.getUserManager();
         this.messageManager = plugin.getMessageManager();
         this.plugin = plugin;
@@ -59,7 +59,7 @@ public class InviteCommand extends Command {
         target.sendMessage("getRequest", render.getTag(), render.getName());
         user.sendMessage("requestSent", target.getUsername());
         Request request = new JoinRequest(target, guild, this.plugin);
-        target.request(request); //add timeout
+        target.request(request); //set timeout
         return true;
     }
 }

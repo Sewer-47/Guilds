@@ -1,6 +1,6 @@
 package me.sewer.guilds.module.impl.render;
 
-import me.sewer.guilds.command.impl.create.CreateOptions;
+import me.sewer.guilds.options.CreateOptions;
 import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.guild.GuildRender;
 import me.sewer.guilds.guild.event.GuildCreateEvent;

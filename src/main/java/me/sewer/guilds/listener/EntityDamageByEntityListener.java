@@ -1,6 +1,7 @@
 package me.sewer.guilds.listener;
 
 import me.sewer.guilds.GuildsPlugin;
+import me.sewer.guilds.Relation;
 import me.sewer.guilds.user.UserManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
@@ -34,7 +35,8 @@ public class EntityDamageByEntityListener implements Listener {
                             event.setCancelled(true);
                             return;
                         }
-                        if (guild.getRelations().getFriends().contains(victimGuild) && !allyAttack) {
+                        Relation relation = guild.getRelations().relation(victimGuild.getUniqueId());
+                        if (relation != null && relation.equals(Relation.ALLY) && !this.allyAttack) {
                             user.sendMessage("cannotAttackFriend");
                             event.setCancelled(true);
                             return;

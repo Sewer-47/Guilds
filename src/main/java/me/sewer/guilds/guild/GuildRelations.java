@@ -1,18 +1,16 @@
 package me.sewer.guilds.guild;
 
+import me.sewer.guilds.Relation;
 import me.sewer.guilds.Request;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class GuildRelations {
 
     private Optional<Request> lastRequest = Optional.empty();
-    private final Set<Guild> friends = new HashSet<>();
-    private final Set<Guild> enemies = new HashSet<>();
+    private final Map<UUID, Relation> relations = new HashMap<>();
 
     public GuildRelations() {
     }
@@ -71,11 +69,44 @@ public class GuildRelations {
         }
     }
 
-    public Set<Guild> getFriends() {
-        return this.friends;
+    public Map<UUID, Relation> getAll() {
+        return this.relations;
     }
 
-    public Set<Guild> getEnemies() {
-        return this.enemies;
+    public Relation relation(UUID guildId) {
+        return this.relations.get(guildId);
+    }
+
+    public void remove(UUID guildId) {
+        if (!this.relations.containsKey(guildId)) {
+            this.relations.remove(guildId);
+        }
+    }
+
+    public void set(UUID guildId, Relation relation) {
+        if (this.contains(guildId)) {
+            this.remove(guildId);
+        }
+        this.relations.put(guildId, relation);
+    }
+
+    public boolean contains(UUID guildId) {
+        Relation relation = this.relation(guildId);
+        if (relation == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean isAlly(UUID guildId) {
+        if (!this.contains(guildId)) {
+            return false;
+        }
+        if (this.relation(guildId).equals(Relation.ALLY)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

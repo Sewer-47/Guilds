@@ -7,7 +7,7 @@ import org.bukkit.World;
 
 public class RegionManager {
 
-    private final Map<UUID, RegionRegistry> registryByWorldId = new HashMap<UUID, RegionRegistry>();
+    private final Map<UUID, RegionRegistry> registryByWorldId = new HashMap<>();
 
     public RegionRegistry byWorldId(UUID uuid) {
         return this.registryByWorldId.get(uuid);

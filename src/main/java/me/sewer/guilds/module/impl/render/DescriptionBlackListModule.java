@@ -21,7 +21,7 @@ public class DescriptionBlackListModule extends Module implements WordBlackList 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true )
     public void onCreate(GuildCreateEvent event) {
         Guild guild = event.getGuild();
-        if (this.constains(guild.getRender().getDescription(), this.blackList)) {
+        if (this.contains(guild.getRender().getDescription(), this.blackList)) {
             event.getCreator().sendMessage("illegalDescription");
             event.setCancelled(true);
         }

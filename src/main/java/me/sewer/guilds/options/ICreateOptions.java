@@ -1,13 +1,13 @@
-package me.sewer.guilds.command.impl.create;
+package me.sewer.guilds.options;
 
+import com.google.common.collect.Multimap;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ICreateOptions {
 
-    Map<String, List<ItemStack>> requiredItems();
+    Multimap<String, ItemStack> requiredItems();
 
     int borderDistance();
 

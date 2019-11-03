@@ -12,8 +12,12 @@ public class UserKDA {
         this.assists = 0;
     }
 
+    public double getKD() {
+        return this.kills/this.assists;
+    }
+
     public int getKills() {
-        return kills;
+        return this.kills;
     }
 
     public void setKills(int kills) {
@@ -21,7 +25,7 @@ public class UserKDA {
     }
 
     public int getDeaths() {
-        return deaths;
+        return this.deaths;
     }
 
     public void setDeaths(int deaths) {
@@ -29,7 +33,7 @@ public class UserKDA {
     }
 
     public int getAssists() {
-        return assists;
+        return this.assists;
     }
 
     public void setAssists(int assists) {

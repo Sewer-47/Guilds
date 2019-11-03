@@ -12,7 +12,7 @@ public class GuildPermission {
 
     public static final GuildPermission KICK = new GuildPermission("kick", "kickingPlayers");
 
-    public static final GuildPermission ADD = new GuildPermission("add",  "addingPlayers");
+    public static final GuildPermission ADD = new GuildPermission("set",  "addingPlayers");
 
     public static final GuildPermission OPEN_SAFE = new GuildPermission("openSafe",  "openingSafe");
 

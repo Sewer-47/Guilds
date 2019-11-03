@@ -1,10 +1,8 @@
 #TODO ogolnie musze zrobic
-  #DUMMY Z RANKIEM
-  #TOPKA RANKINGU
-  #w info gracza ma byc KDA I RANKING
-  #poprawic EntityExplodeListener
-  #cooldwown w zakladaniu gildii i zmienianiu nazwy i tagu gildii
-  w requestach uzywac wlasnego
+
+
+  #cooldwown w zakladaniu gildii, sojuszy i zmienianiu nazwy i tagu gildii
+  w requestach uzywac wlasnego validity
 
 #TODO przemyslec czy zrobic
   #Dodanie zmiennej od liczenia ilości wylogowań się gracza podczas walki i ilości asyst
@@ -14,19 +12,37 @@
   #https://skript.pl/temat/20075-protocoltab-api-do-zarz%C4%85dzania-tablist%C4%85-18/ moze te tego api do tablisty uzyje fest
 
 #Relase 1.0 TODO to musze zrobic zanim bedzie relase 1.0 pluginu
-  #menu ustawien gildii
-  #efekty w gui
-  #bloki chronione przed wybuchem tnt
-  #KOMENDY ADMINA
-  #trzeba sprawdzac swiat przy usuwaniu regionow gildii
-  #dokonczyc system uprawnien
+                                #menu ustawien gildii
+                                #efekty w gui
+                                #bloki chronione przed wybuchem tnt
+                                #KOMENDY ADMINA
+                                #trzeba sprawdzac swiat przy usuwaniu regionow gildii
+                                #dokonczyc system uprawnien
+                              #permisja do stawiania i usuwania niektorych blokow #todo
 
-#Plany na kolejny commit: Wars update
-      #permisja do stawiania i usuwania niektorych blokow
-      #ENDERCRYSTALE MAJA BYC ZROBIONE PAKIETAMI
-      #PODBIJANIE GILDII
-      #komenda od resetowania rankingu
-      #gildie mozna podbijac dopiero po jakims czasie
-      #MAKSYMALNA ILOSC GRACZY W GILDII, sojuszy i wrogow
-      #wyjatek zeby nie dawalo pkt za zabicie tego samego gracza
-      #intruz na terenie gildii
+                              #Nastepny: Wars update
+
+                              #tworzyc schematic wokol gildii, ale tylko jesli jest we
+                                    #ENDERCRYSTALE #poprawic render czlonkow w gildii
+                                    #PODBIJANIE GILDII #todo
+                                    #wyjatek zeby nie dawalo pkt za zabicie tego samego gracza #todo
+                                    #TOPKA RANKINGU #todo zrobic to zapisujac topke to listy do jakis czas w async tasku i potem renderowac ta liste
+                                    #w info gracza ma byc KDA I RANKING #todo
+
+                                    #itemy do dolaczenia do gildii w module #todo moze byc ale nw czy jest zrobioen
+                                    #DUMMY Z RANKIEM #todo
+                                    #gildie mozna podbijac dopiero po jakims czasie #todo
+                                    #MAKSYMALNA ILOSC GRACZY W GILDII, sojuszy i wrogow #todo
+                                    #komenda od resetowania rankingu #todo
+                                    #trzymac jakos inaczej gildie po stronie usera #nie moga byc optinal #todo
+                                    #w guildrelations trzymac uuid gildii a nie gildie #todo
+                                    metoda getKD() w UserKDA
+                                    naprawic system rankingu
+                                    #intruz na terenie gildii
+                                    #nowe wyjatki blednej konfiguracji
+
+//sprawdzic czy wszystkie opcje tworzenia gildii dzialaja poprawnie
+ogarnac syf w PlaceHolderAPIHook, WorldEditHook, GuildsPlugin i wehook zrobic budowle dla kilku rank
+
+sprawdzic czy nie ma bledow w relacjach
+sprawdzic czy nie buguje sie system intruzow w gildii

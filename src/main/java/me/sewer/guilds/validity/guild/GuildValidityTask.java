@@ -1,10 +1,8 @@
 package me.sewer.guilds.validity.guild;
 
 import me.sewer.guilds.GuildsPlugin;
-import me.sewer.guilds.guild.GuildManager;
-import me.sewer.guilds.guild.GuildRelations;
-import me.sewer.guilds.guild.GuildRender;
-import me.sewer.guilds.guild.GuildTerrain;
+import me.sewer.guilds.Relation;
+import me.sewer.guilds.guild.*;
 import me.sewer.guilds.guild.event.GuildDeleteEvent;
 import me.sewer.guilds.region.RegionManager;
 import me.sewer.guilds.user.UserManager;
@@ -13,6 +11,10 @@ import me.sewer.guilds.window.WindowManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 public class GuildValidityTask implements Runnable {
 
@@ -52,9 +54,11 @@ public class GuildValidityTask implements Runnable {
                         });
                     });
 
-                    GuildRelations guildRelations = guild.getRelations();
-                    guildRelations.getFriends().forEach(ally -> {
-                        ally.getRelations().getFriends().remove(guild);
+                    Map<UUID, Relation> relations = guild.getRelations().getAll();
+                    relations.keySet().forEach(relationGuildId -> {
+                        this.guildManager.getGuild(relationGuildId).ifPresent(relationGuild -> {
+                            relationGuild.getRelations().remove(guild.getUniqueId());
+                        });
                     });
 
                     this.guildManager.unregisterGuild(guild);

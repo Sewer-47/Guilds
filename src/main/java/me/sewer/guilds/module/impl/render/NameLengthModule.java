@@ -1,6 +1,6 @@
 package me.sewer.guilds.module.impl.render;
 
-import me.sewer.guilds.command.impl.create.CreateOptions;
+import me.sewer.guilds.options.CreateOptions;
 import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.guild.GuildRender;
 import me.sewer.guilds.guild.event.GuildCreateEvent;
@@ -23,8 +23,8 @@ public class NameLengthModule extends Module {
         Guild guild = event.getGuild();
         GuildRender render = guild.getRender();
         String name = render.getName();
-        if (name.length() < this.options.tagMinLength() || name.length() > this.options.tagMaxLength()) {
-            event.getCreator().sendMessage("correctNameLength", this.options.tagMinLength(), this.options.tagMaxLength());
+        if (name.length() < this.options.nameMinLength() || name.length() > this.options.nameMaxLength()) {
+            event.getCreator().sendMessage("correctNameLength", this.options.nameMinLength(), this.options.nameMaxLength());
             event.setCancelled(true);
         }
     }

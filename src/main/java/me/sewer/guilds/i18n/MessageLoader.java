@@ -1,7 +1,6 @@
 package me.sewer.guilds.i18n;
 
 import me.sewer.guilds.GuildsPlugin;
-import org.apache.commons.lang.CharSet;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -45,7 +44,7 @@ public class MessageLoader {
        this.plugin.getMessageManager().registerLocale(messageMap);
     }
 
-    public void unpack(File path) {
+    public void extract(File path) {
         File folder = new File(this.plugin.getDataFolder(), "i18n");
         if (!folder.exists() && !folder.isDirectory()) {
             folder.mkdirs();
@@ -55,7 +54,7 @@ public class MessageLoader {
         try {
             jarFile = new JarFile(path);
         } catch (IOException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "Error occurred while loading file caused by exception", e);
+            this.plugin.getLogger().log(Level.SEVERE, "Error occurred while extracting file caused by exception", e);
             return;
         }
         Enumeration enumEntries = jarFile.entries();
@@ -79,7 +78,7 @@ public class MessageLoader {
                         }
                         out.flush();
                     } catch (IOException e) {
-                        this.plugin.getLogger().log(Level.SEVERE, "Error occurred while loading file" + file.getName() + "caused by exception", e);
+                        this.plugin.getLogger().log(Level.SEVERE, "Error occurred while extracting file" + file.getName() + "caused by exception", e);
                     } finally {
                         if (out != null) {
                             try {

@@ -17,10 +17,10 @@ public class EloAlgorithm {
     }
 
     public int calculateKiller(int rank0, int rank1) {
-        return rank0 + this.multiplier * (1 - (1 / (1 + 10^((rank1 -rank0) / 400))));
+      return (int) Math.ceil(rank0 + (this.multiplier * (1 - (1 / (1 + Math.pow(10, (rank1 - rank0) / 400))))));
     }
 
     public int calculateVictim(int rank0, int rank1) {
-        return rank1 + this.multiplier * (0 - (1 / (1 + 10^((rank0 -rank1) / 400))));
+        return (int) Math.floor(rank1 + (this.multiplier * (0 - (1 / (1 + Math.pow(10, (rank0 - rank1) / 400))))));
     }
 }

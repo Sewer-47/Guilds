@@ -5,13 +5,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PlayerRegionEnterEvent extends Event {
+public class AsyncPlayerRegionQuitEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
     private final Player player;
     private final Region region;
 
-    public PlayerRegionEnterEvent(Player player, Region region) {
+    public AsyncPlayerRegionQuitEvent(Player player, Region region) {
         super(true);
         this.player = player;
         this.region = region;

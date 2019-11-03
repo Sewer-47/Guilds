@@ -1,19 +1,22 @@
 package me.sewer.guilds;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.sewer.guilds.command.BukkitCommand;
 import me.sewer.guilds.command.Command;
 import me.sewer.guilds.command.CommandManager;
 import me.sewer.guilds.command.impl.*;
 import me.sewer.guilds.command.impl.ally.AllyCommand;
-import me.sewer.guilds.command.impl.create.CreateCommand;
-import me.sewer.guilds.command.impl.create.CreateOptions;
+import me.sewer.guilds.command.impl.CreateCommand;
+import me.sewer.guilds.hook.WorldEditHook;
+import me.sewer.guilds.options.CreateOptions;
 import me.sewer.guilds.command.impl.items.ItemsCommand;
 import me.sewer.guilds.command.impl.items.ItemsWindow;
 import me.sewer.guilds.command.impl.join.JoinCommand;
 import me.sewer.guilds.elo.EloAlgorithm;
 import me.sewer.guilds.elo.EloListeners;
-import me.sewer.guilds.guild.GuildFileManager;
+import me.sewer.guilds.guild.Guild;
 import me.sewer.guilds.guild.GuildManager;
 import me.sewer.guilds.guild.GuildRegionListeners;
 import me.sewer.guilds.hook.PlaceholderAPIHook;
@@ -29,19 +32,15 @@ import me.sewer.guilds.module.impl.CreationBanModule;
 import me.sewer.guilds.module.impl.PrivateChatModule;
 import me.sewer.guilds.module.impl.RequiredItemsModule;
 import me.sewer.guilds.module.impl.render.*;
-import me.sewer.guilds.module.impl.world.BorderDistanceModule;
-import me.sewer.guilds.module.impl.world.OtherGuildDistanceModule;
-import me.sewer.guilds.module.impl.world.SpawnDistanceModule;
-import me.sewer.guilds.module.impl.world.WorldTypeModule;
+import me.sewer.guilds.module.impl.world.*;
 import me.sewer.guilds.region.RegionListeners;
 import me.sewer.guilds.region.RegionManager;
 import me.sewer.guilds.region.RegionRegistry;
-import me.sewer.guilds.region.RegionTask;
+import me.sewer.guilds.region.tracker.RegionTrackerTask;
 import me.sewer.guilds.teleport.TeleportManager;
 import me.sewer.guilds.teleport.TeleportTask;
 import me.sewer.guilds.user.User;
-import me.sewer.guilds.user.UserFileManager;
-import me.sewer.guilds.user.UserListeners;
+import me.sewer.guilds.user.UserTrackerListeners;
 import me.sewer.guilds.user.UserManager;
 import me.sewer.guilds.validity.guild.GuildValidityTask;
 import me.sewer.guilds.window.Window;
@@ -53,6 +52,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -77,14 +77,13 @@ public final class GuildsPlugin extends JavaPlugin {
     private CommandManager commandManager;
     private TeleportManager teleportManager;
 
-    private BaseFileManager userFileManager;
-    private BaseFileManager guildFileManager;
-
     private Set<Module> modules;
 
     private EloAlgorithm eloAlgorithm;
 
     private Items items;
+
+    private WorldEditHook worldEditHook;
 
     @Override
     public void onEnable() {
@@ -103,16 +102,16 @@ public final class GuildsPlugin extends JavaPlugin {
         this.commandManager = new CommandManager(new UnkownCommand());
         this.messageManager = new MessageManager(locale);
         this.teleportManager = new TeleportManager();
-        this.userFileManager = new UserFileManager(this);
-        this.guildFileManager = new GuildFileManager(this);
         this.eloAlgorithm = new EloAlgorithm(this.getConfig().getInt("eloMultiplier"));
 
-        messageLoader.unpack(this.getFile().getAbsoluteFile());
+        messageLoader.extract(this.getFile().getAbsoluteFile());
         messageLoader.loadAll();
 
         Map<String, Material> itemsMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         File itemsFile = new File(this.getDataFolder(), "items.yml");
-        this.saveResource("items.yml", false);
+        if (!itemsFile.exists()) {
+            this.saveResource("items.yml", false);
+        }
         FileConfiguration itemsConfiguration = YamlConfiguration.loadConfiguration(itemsFile);
         for (String key : itemsConfiguration.getKeys(false)) {
             Material material = Material.matchMaterial(itemsConfiguration.getString(key));
@@ -139,27 +138,29 @@ public final class GuildsPlugin extends JavaPlugin {
             messagesMap.put(key, configurationSection.getString(key));
         }
 
-        Map<String, List<ItemStack>> requiredItems = new HashMap<>();
+        Multimap<String, ItemStack> requiredItems = ArrayListMultimap.create();
         ConfigurationSection creationItems = this.getConfig().getConfigurationSection("creationItems").getConfigurationSection("items");
         creationItems.getKeys(false).forEach(rank -> {
             if (!rank.equals("enabled")) {
                 ConfigurationSection items = creationItems.getConfigurationSection(rank);
-                List<ItemStack> itemsRank = new ArrayList<>();
                 for (String key : items.getKeys(false)) {
                     Material material = this.items.getItem(key);
                     if (material != null) {
-                        itemsRank.add(new ItemStack(material, items.getInt(key)));
+                        String permission = "guilds.items." + rank;
+                        ItemStack itemStack = new ItemStack(material, items.getInt(key));
+                        requiredItems.put(permission, itemStack);
                     } else {
                         this.getLogger().log(Level.SEVERE, "Cannot parse material " + key);
                     }
                 }
-                requiredItems.put("guilds.items." + rank, itemsRank);
             }
         });
 
         List<ItemStack> windowItems = new ArrayList<>();
         File windowsFile = new File(this.getDataFolder(), "windows.yml");
-        this.saveResource("windows.yml", false);
+        if (!windowsFile.exists()) {
+            this.saveResource("windows.yml", false);
+        }
         ConfigurationSection windowsConfiguration = YamlConfiguration.loadConfiguration(windowsFile).getConfigurationSection("items");
         String name = ChatColor.translateAlternateColorCodes('&', windowsConfiguration.getString("name"));
         int size = windowsConfiguration.getInt("size");
@@ -184,13 +185,35 @@ public final class GuildsPlugin extends JavaPlugin {
 
         ItemsWindow itemsWindow = new ItemsWindow(size, name, windowItems);
 
-        CreateOptions createOptions = new CreateOptions(this, requiredItems);
+        CreateOptions createOptions = new CreateOptions(requiredItems);
+        try {
+            createOptions.load(this.getConfig());
+        } catch (InvalidConfigurationException exception) {
+            exception.printStackTrace();
+            this.getPluginLoader().disablePlugin(this);
+            return;
+        }
 
         this.loadTask();
         this.loadListeners(pluginManager, messagesMap);
         this.loadModules(createOptions);
         this.loadCommands(createOptions, itemsWindow);
+        this.loadHooks(pluginManager);
 
+
+        for (Guild guild : this.guildManager.getAll()) {
+            guild.getHeart().create();
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        for (Guild guild : this.guildManager.getAll()) {
+            guild.getHeart().kill();
+        }
+    }
+
+    private void loadHooks(PluginManager pluginManager) {
         if (pluginManager.getPlugin("PlaceholderAPI") != null) {
             PlaceholderAPIHook placeHolderApiHook = new PlaceholderAPIHook(this);
             if (PlaceholderAPI.registerExpansion(placeHolderApiHook)) {
@@ -198,16 +221,17 @@ public final class GuildsPlugin extends JavaPlugin {
             }
 
         }
-    }
 
-    @Override
-    public void onDisable() {
-
+        if (pluginManager.getPlugin("WorldEdit") != null) {
+            this.worldEditHook = new WorldEditHook(this);
+            this.getLogger().log(Level.INFO, "WorldEdit hook has been enabled succesful");
+            this.worldEditHook.extract(this.getFile().getAbsoluteFile());
+        }
     }
 
     private void loadTask() {
         BukkitScheduler scheduler = this.getServer().getScheduler();
-        scheduler.runTaskTimerAsynchronously(this, new RegionTask(this), 1L, 5L);
+        scheduler.runTaskTimerAsynchronously(this, new RegionTrackerTask(this), 1L, 5L);
         scheduler.runTaskTimerAsynchronously(this, new GuildValidityTask(this), 1L, 20L * 6);
         scheduler.runTaskTimer(this, new TeleportTask(this.teleportManager.getTeleportList()), 1L, 20L);
     }
@@ -231,6 +255,7 @@ public final class GuildsPlugin extends JavaPlugin {
                 new NameBlackListModule(renderConfiguration.getStringList("nameBlackList")),
                 new DescriptionBlackListModule(renderConfiguration.getStringList("descriptionBlackList")),
                 new RequiredItemsModule(createOptions),
+                new IntruderModule(this),
 
         }) {
             module.initialize(this);
@@ -251,7 +276,7 @@ public final class GuildsPlugin extends JavaPlugin {
             }
         }
         for (Listener listener : new Listener[]{
-                new UserListeners(this),
+                new UserTrackerListeners(this),
                 new RegionListeners(this),
                 new EntityDamageByEntityListener(this),
                 new MessageListeners(this),
@@ -291,6 +316,7 @@ public final class GuildsPlugin extends JavaPlugin {
                 new EnemyCommand(this),
                 new BreakCommand(this),
                 new ItemsCommand(itemsWindow),
+                new ResetRankCommand(this.getConfig().getInt("startPoints")),
         }) {
             this.commandManager.registerCommand(command);
         }
@@ -330,19 +356,15 @@ public final class GuildsPlugin extends JavaPlugin {
         return commandManager;
     }
 
-    public BaseFileManager getUserFileManager() {
-        return this.userFileManager;
-    }
-
-    public BaseFileManager getGuildFileManager() {
-        return this.guildFileManager;
-    }
-
     public EloAlgorithm getEloAlgorithm() {
         return this.eloAlgorithm;
     }
 
     public Items getItems() {
         return this.items;
+    }
+
+    public WorldEditHook getWorldEditHook() {
+        return this.worldEditHook;
     }
 }

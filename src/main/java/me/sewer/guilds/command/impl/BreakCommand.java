@@ -52,12 +52,12 @@ public class BreakCommand extends Command {
             }
             GuildRelations guildRelations = guild.getRelations();
             GuildRender guildRender = guild.getRender();
-            if (!guildRelations.getFriends().contains(target)) {
+            if (!guildRelations.isAlly(target.getUniqueId())) {
                 user.sendMessage("GuildsIsNoAlly");
                 return;
             }
-            guildRelations.getFriends().remove(target);
-            target.getRelations().getFriends().remove(guild);
+            guildRelations.remove(target.getUniqueId());
+            target.getRelations().remove(guild.getUniqueId());
             GuildRender targetRender = target.getRender();
             Bukkit.getOnlinePlayers().forEach(player -> this.userManager.getUser(player).ifPresent(user1 -> user1.sendMessage("AllyBroken",
                     guildRender.getTag(),

@@ -21,7 +21,7 @@ public class TagBlackListModule extends Module implements WordBlackList {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true )
     public void onCreate(GuildCreateEvent event) {
         Guild guild = event.getGuild();
-        if (this.constains(guild.getRender().getTag(), this.blackList)) {
+        if (this.contains(guild.getRender().getTag(), this.blackList)) {
             event.getCreator().sendMessage("illegalTag");
             event.setCancelled(true);
         }

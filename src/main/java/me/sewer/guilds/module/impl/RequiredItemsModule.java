@@ -1,6 +1,7 @@
 package me.sewer.guilds.module.impl;
 
-import me.sewer.guilds.command.impl.create.CreateOptions;
+import com.google.common.collect.Multimap;
+import me.sewer.guilds.options.CreateOptions;
 import me.sewer.guilds.guild.event.GuildCreateEvent;
 import me.sewer.guilds.module.Module;
 import me.sewer.guilds.module.ModuleInfo;
@@ -9,13 +10,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
 @ModuleInfo(name = "RequiredItemsModule")
 public class RequiredItemsModule extends Module {
 
-    private final Map<String, List<ItemStack>> requiredItems;
+    private final Multimap<String, ItemStack> requiredItems;
 
     public RequiredItemsModule(CreateOptions options) {
         this.requiredItems = options.requiredItems();
@@ -31,7 +31,7 @@ public class RequiredItemsModule extends Module {
 
             this.requiredItems.keySet().forEach(permissions -> {
                 if (player.hasPermission(permissions)) {
-                    List<ItemStack> requiredItems = this.requiredItems.get(permissions);
+                    Collection<ItemStack> requiredItems = this.requiredItems.get(permissions);
                     for (ItemStack requiredItem : requiredItems) {
                         if (!player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
                             user.sendMessage("notEnoughItems", requiredItem.getType().toString(), requiredItem.getAmount());
